@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nestly Messages</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="bg-shape bg-shape-1"></div>
+	<div class="bg-shape bg-shape-2"></div>
+
+	<header class="topbar">
+		<a class="brand" href="index.html">
+			<span class="brand-dot"></span>
+			Nestly
+		</a>
+		<div class="topbar-actions">
+			<a class="message-center-button" href="index.html">Back to listings</a>
+		</div>
+	</header>
+
+	<main class="shell">
+		<section class="hero">
+			<p class="kicker">Your activity</p>
+			<h1>Messages</h1>
+			<p class="hero-copy">Click a conversation to open the chat.</p>
+		</section>
+
+		<section class="messages-layout" style="margin-top: 16px;">
+			<article class="panel-card threads-column">
+				<div class="threads-head">
+					<h3>Conversations</h3>
+					<button id="clearChats" class="btn ghost small-btn" type="button">Clear all</button>
+				</div>
+				<p id="messagesEmpty" class="message-empty">No messages yet. Start chatting from a listing.</p>
+				<ul id="threadList" class="thread-list"></ul>
+			</article>
+
+			<article class="panel-card chat-column" id="chatColumn">
+				<p class="message-empty" id="chatPlaceholder">Select a conversation to read and reply.</p>
+				<div id="inlineChat" hidden>
+					<div class="inline-chat-head">
+						<div class="inline-chat-meta">
+							<strong id="inlineChatTitle"></strong>
+							<div id="inlineChatFacts" class="chat-facts"></div>
+						</div>
+						<a id="inlineChatLink" class="btn ghost small-btn" href="#">Go to listing</a>
+					</div>
+					<ul class="chat-log" id="inlineChatLog"></ul>
+					<form id="inlineChatForm" class="inline-form">
+						<input id="inlineChatInput" type="text" placeholder="Write a message..." required>
+						<button class="btn primary" type="submit">Send</button>
+					</form>
+				</div>
+			</article>
+		</section>
+	</main>
+
+	<script src="auth.js"></script>
+	<script src="messages.js"></script>
+</body>
+</html>
