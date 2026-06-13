@@ -369,6 +369,10 @@ select:focus {
   color: #fff;
 }
 
+.reset-filters-btn {
+  align-self: end;
+}
+
 .ghost {
   border: 1px solid var(--line);
   background: #fff;

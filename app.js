@@ -166,6 +166,7 @@ const priceInput = document.getElementById("priceInput");
 const purposeInput = document.getElementById("purposeInput");
 const typeInput = document.getElementById("typeInput");
 const searchForm = document.getElementById("searchForm");
+const resetFiltersBtn = document.getElementById("resetFiltersBtn");
 let lightboxImages = [];
 let lightboxIndex = 0;
 let selectedListingId = null;
@@ -727,6 +728,13 @@ searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
   applyFilters();
 });
+
+if (resetFiltersBtn) {
+  resetFiltersBtn.addEventListener("click", () => {
+    searchForm.reset();
+    applyFilters();
+  });
+}
 
 loadCurrentMessageStore();
 updateMessageBadge();
