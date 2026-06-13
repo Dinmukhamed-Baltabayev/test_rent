@@ -446,7 +446,7 @@ function formatRentType(listing) {
     contractText = listing.rentType === "short" ? "Short-term" : "Long-term";
   }
 
-  return `${size} · ${bedroomText} · ${contractText}`;
+  return `${bedroomText} · ${contractText} · ${size}`;
 }
 
 function formatOwnership(listing) {

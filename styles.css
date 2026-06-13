@@ -1504,14 +1504,17 @@ h2 {
 
   .card-grid {
     display: grid;
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
   .cards-column {
+    width: 100%;
     gap: 10px;
   }
 
   .listing-card {
+    width: 100%;
     grid-template-columns: 1fr;
     border-radius: 16px;
   }
