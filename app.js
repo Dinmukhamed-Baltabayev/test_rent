@@ -491,6 +491,10 @@ function renderCards(items) {
   });
 
   const fragment = document.createDocumentFragment();
+  const leftColumn = document.createElement("div");
+  leftColumn.className = "cards-column cards-column-left";
+  const rightColumn = document.createElement("div");
+  rightColumn.className = "cards-column cards-column-right";
 
   items.forEach((listing, index) => {
     const node = cardTemplate.content.cloneNode(true);
@@ -526,9 +530,15 @@ function renderCards(items) {
     });
 
     card.style.animationDelay = `${index * 60}ms`;
-    fragment.appendChild(node);
+    if (index % 2 === 0) {
+      leftColumn.appendChild(node);
+    } else {
+      rightColumn.appendChild(node);
+    }
   });
 
+  fragment.appendChild(leftColumn);
+  fragment.appendChild(rightColumn);
   cardsEl.appendChild(fragment);
   resultCountEl.textContent = `${items.length} result${items.length > 1 ? "s" : ""}`;
 }
