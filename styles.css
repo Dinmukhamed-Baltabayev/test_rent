@@ -1503,8 +1503,8 @@ h2 {
   }
 
   .card-grid {
-    display: block;
-    gap: 10px;
+    display: grid;
+    gap: 12px;
   }
 
   .cards-column {
