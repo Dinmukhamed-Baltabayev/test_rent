@@ -392,12 +392,22 @@ function formatPrice(listing) {
 }
 
 function formatRentType(listing) {
-  if (listing.purpose !== "rent" || !listing.rentType) {
-    return "";
+  const size = Number.isFinite(listing.size) ? `${listing.size} m2` : "Size N/A";
+  const bedroomCount = Number.isFinite(listing.bedrooms)
+    ? listing.bedrooms
+    : Number.isFinite(listing.rooms)
+      ? listing.rooms
+      : null;
+  const bedroomText = bedroomCount === null
+    ? "Bedrooms N/A"
+    : `${bedroomCount} bedroom${bedroomCount === 1 ? "" : "s"}`;
+
+  let contractText = "For sale";
+  if (listing.purpose === "rent") {
+    contractText = listing.rentType === "short" ? "Short-term" : "Long-term";
   }
 
-  const base = listing.rentType === "short" ? "Short-term" : "Long-term";
-  return listing.contractLabel ? `${base} · ${listing.contractLabel}` : base;
+  return `${size} · ${bedroomText} · ${contractText}`;
 }
 
 function formatOwnership(listing) {
