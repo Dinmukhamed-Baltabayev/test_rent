@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nestly Landlord Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-dot"></span>
+      Nestly
+    </a>
+    <div class="topbar-actions">
+      <a class="message-center-button" href="messages.html">Messages</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <p class="kicker">Landlord tools</p>
+      <h1>Post listing (demo)</h1>
+      <p class="hero-copy">This is a demo-only posting form. It does not publish listings yet.</p>
+    </section>
+
+    <section class="layout-grid" style="margin-top: 16px;">
+      <article class="panel-card">
+        <p id="postAccessHint" class="auth-hint" style="margin-bottom: 16px;" hidden></p>
+
+        <form id="postListingForm" class="search-grid" autocomplete="off">
+          <p class="section-kicker field-span-4">Images</p>
+          <label class="field-span-2">
+            Image URL 1
+            <input id="postImage1" type="url" placeholder="https://..." required>
+          </label>
+          <label class="field-span-2">
+            Image URL 2
+            <input id="postImage2" type="url" placeholder="https://...">
+          </label>
+          <label class="field-span-2">
+            Image URL 3
+            <input id="postImage3" type="url" placeholder="https://...">
+          </label>
+
+          <p class="section-kicker field-span-4">Ownership</p>
+          <label>
+            Ownership
+            <select id="postOwnership" required>
+              <option value="owner">Direct owner</option>
+              <option value="organization">Organization</option>
+            </select>
+          </label>
+          <label>
+            Listing title
+            <input id="postTitle" type="text" placeholder="Bright studio near campus" required>
+          </label>
+          <label>
+            City
+            <input id="postCity" type="text" placeholder="Debrecen" required>
+          </label>
+          <label>
+            District
+            <input id="postDistrict" type="text" placeholder="University Quarter" required>
+          </label>
+
+          <p class="section-kicker field-span-4">Financial Information</p>
+          <label>
+            Purpose
+            <select id="postPurpose" required>
+              <option value="rent">For rent</option>
+              <option value="sale">For sale</option>
+            </select>
+          </label>
+          <label>
+            Contract type
+            <select id="postContract" required>
+              <option value="long">Long-term</option>
+              <option value="short">Short-term</option>
+            </select>
+          </label>
+          <label>
+            Contract label
+            <select id="postContractLabel">
+              <option value="">No extra label</option>
+              <option value="3-month minimum">3-month minimum</option>
+              <option value="6-month contract">6-month contract</option>
+              <option value="12-month contract">12-month contract</option>
+              <option value="Open-ended">Open-ended</option>
+            </select>
+          </label>
+          <label>
+            Status
+            <select id="postStatus" required>
+              <option value="available">Available</option>
+              <option value="rented">Rented out</option>
+              <option value="sold">Sold</option>
+            </select>
+          </label>
+          <label>
+            Available from
+            <input id="postAvailableFrom" type="date">
+          </label>
+          <label>
+            Price (Ft)
+            <input id="postPrice" type="number" min="10000" step="1000" placeholder="220000" required>
+          </label>
+          <label>
+            Community fee (Ft)
+            <input id="postCommunityFee" type="number" min="0" step="1000" placeholder="18000" required>
+          </label>
+          <label>
+            Deposit (Ft)
+            <input id="postDeposit" type="number" min="0" step="1000" placeholder="336000" required>
+          </label>
+          <label>
+            Utilities estimate (Ft)
+            <input id="postUtilities" type="number" min="0" step="1000" placeholder="22000" required>
+          </label>
+
+          <p class="section-kicker field-span-4">Physical Characteristics</p>
+          <label>
+            Property type
+            <select id="postType" required>
+              <option value="studio">Studio</option>
+              <option value="shared">Shared flat</option>
+              <option value="apartment">Apartment</option>
+            </select>
+          </label>
+          <label>
+            Flat type
+            <select id="postFlatType" required>
+              <option value="Brick">Brick</option>
+              <option value="Panel">Panel</option>
+              <option value="New build">New build</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+          <label>
+            Size (m2)
+            <input id="postSize" type="number" min="10" step="1" placeholder="32" required>
+          </label>
+          <label>
+            Floor number
+            <input id="postFloorNumber" type="number" step="1" placeholder="2" required>
+          </label>
+          <label>
+            Elevator
+            <select id="postElevator" required>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </label>
+          <label>
+            Bedrooms
+            <select id="postBedrooms" required>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+          <label>
+            Bathrooms
+            <select id="postBathrooms" required>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </label>
+          <label>
+            Condition
+            <select id="postCondition" required>
+              <option value="Needs renovation">Needs renovation</option>
+              <option value="Good condition">Good condition</option>
+              <option value="Recently renovated">Recently renovated</option>
+              <option value="Excellent">Excellent</option>
+            </select>
+          </label>
+
+          <p class="section-kicker field-span-4">Utilities & Features</p>
+          <label>
+            Heating type
+            <select id="postHeatingType" required>
+              <option value="Central heating">Central heating</option>
+              <option value="District heating">District heating</option>
+              <option value="Individual gas">Individual gas</option>
+              <option value="Electric">Electric</option>
+            </select>
+          </label>
+          <label>
+            Equipment/Furnishing
+            <select id="postFurnishing" required>
+              <option value="Furnished">Furnished</option>
+              <option value="Partly furnished">Partly furnished</option>
+              <option value="Unfurnished">Unfurnished</option>
+            </select>
+          </label>
+          <label>
+            Furnished
+            <select id="postFurnished" required>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </label>
+          <fieldset class="feature-pills field-span-4">
+            <legend>Features</legend>
+            <label><input type="checkbox" name="postFeature" value="Air conditioning"> Air conditioning</label>
+            <label><input type="checkbox" name="postFeature" value="Dishwasher"> Dishwasher</label>
+            <label><input type="checkbox" name="postFeature" value="Balcony"> Balcony</label>
+            <label><input type="checkbox" name="postFeature" value="Washing machine"> Washing machine</label>
+            <label><input type="checkbox" name="postFeature" value="Parking"> Parking</label>
+            <label><input type="checkbox" name="postFeature" value="Storage room"> Storage room</label>
+          </fieldset>
+
+          <p class="section-kicker field-span-4">Description</p>
+          <label class="field-span-4">
+            Listing description
+            <textarea id="postDescription" placeholder="Describe the listing details, neighborhood, and amenities." required></textarea>
+          </label>
+
+          <div class="post-actions field-span-4">
+            <button type="button" id="postNowBtn" class="btn primary post-now-action">Post</button>
+            <button type="button" id="saveDraftBtn" class="btn ghost save-draft-action">Save draft</button>
+            <button type="button" id="cancelPostBtn" class="btn ghost danger-action">Cancel</button>
+          </div>
+        </form>
+
+        <p id="postSuccess" class="auth-hint" style="margin-top: 14px;" hidden></p>
+
+        <section id="listingLibrary" class="listing-library" hidden>
+          <div class="listing-library-head">
+            <h3>My listings</h3>
+            <div class="listing-library-tabs" role="tablist" aria-label="Listing views">
+              <button type="button" id="viewDraftsBtn" class="btn ghost small-btn is-active" data-view="drafts">Saved drafts</button>
+              <button type="button" id="viewPostedBtn" class="btn ghost small-btn" data-view="posted">Posted listings</button>
+            </div>
+          </div>
+          <p id="listingLibraryEmpty" class="message-empty" hidden>No items in this list yet.</p>
+          <ul id="listingLibraryList" class="thread-list"></ul>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="post-listing.js"></script>
+</body>
+</html>

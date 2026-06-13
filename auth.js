@@ -1,11 +1,14 @@
 // auth.js — shared authentication module
-// Test account: username: demo  password: demo123
+// Test accounts:
+// renter: username: demo      password: demo123
+// landlord: username: landlord password: demo123
 
 const AUTH_KEY = "nestlyAuth";
 const MESSAGE_STORAGE_PREFIX = "nestlyMessagesV1";
 
 const TEST_USERS = [
-  { username: "demo", password: "demo123", name: "Demo User" }
+  { username: "demo", password: "demo123", name: "Demo Renter", role: "renter" },
+  { username: "landlord", password: "demo123", name: "Demo Landlord", role: "landlord" }
 ];
 
 function isLoggedIn() {
@@ -33,7 +36,7 @@ function authLogin(username, password) {
   if (!user) return false;
   sessionStorage.setItem(
     AUTH_KEY,
-    JSON.stringify({ loggedIn: true, username: user.username, name: user.name })
+    JSON.stringify({ loggedIn: true, username: user.username, name: user.name, role: user.role })
   );
 
   migrateLegacyMessagesToUser(user.username);
@@ -42,6 +45,11 @@ function authLogin(username, password) {
 
 function authLogout() {
   sessionStorage.removeItem(AUTH_KEY);
+}
+
+function isLandlord() {
+  const user = getCurrentUser();
+  return Boolean(user && user.role === "landlord");
 }
 
 function getUserMessageStorageKey() {
@@ -82,7 +90,7 @@ function injectLoginModal() {
     <div class="auth-backdrop"></div>
     <div class="auth-dialog">
       <h2 class="auth-title">Log in</h2>
-      <p class="auth-hint">Test account: <strong>demo</strong> / <strong>demo123</strong></p>
+      <p class="auth-hint">Test accounts: renter <strong>demo</strong> / <strong>demo123</strong>, landlord <strong>landlord</strong> / <strong>demo123</strong></p>
       <form id="loginForm" autocomplete="off" novalidate>
         <label class="auth-label">
           Username
@@ -145,7 +153,7 @@ function updateAuthUI() {
   if (!actionsEl) return;
 
   // Remove existing auth controls so we can rebuild
-  actionsEl.querySelectorAll(".login-btn, .logout-btn, .topbar-user").forEach(
+  actionsEl.querySelectorAll(".login-btn, .logout-btn, .topbar-user, .post-listing-button").forEach(
     (el) => el.remove()
   );
 
@@ -167,25 +175,25 @@ function updateAuthUI() {
       if (typeof onLogoutSuccess === "function") onLogoutSuccess();
     });
 
-    // Insert before the messages link (or prepend if no link)
-    if (messagesLink) {
-      actionsEl.insertBefore(userLabel, messagesLink);
-      actionsEl.insertBefore(logoutBtn, messagesLink);
-    } else {
-      actionsEl.appendChild(userLabel);
-      actionsEl.appendChild(logoutBtn);
+    const postListingLink = document.createElement("a");
+    postListingLink.className = "post-listing-button";
+    postListingLink.href = "post-listing.html";
+    postListingLink.textContent = "Post listing";
+
+    // Keep auth action as the rightmost control in the topbar.
+    if (isLandlord()) {
+      actionsEl.appendChild(postListingLink);
     }
+    actionsEl.appendChild(userLabel);
+    actionsEl.appendChild(logoutBtn);
   } else {
     const loginBtn = document.createElement("button");
     loginBtn.className = "btn ghost login-btn";
     loginBtn.textContent = "Log in";
     loginBtn.addEventListener("click", openLoginModal);
 
-    if (messagesLink) {
-      actionsEl.insertBefore(loginBtn, messagesLink);
-    } else {
-      actionsEl.appendChild(loginBtn);
-    }
+    // Keep auth action as the rightmost control in the topbar.
+    actionsEl.appendChild(loginBtn);
   }
 }
 

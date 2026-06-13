@@ -436,7 +436,25 @@ function formatPropertyType(type) {
 }
 
 function canSendMessage(listing) {
-  return isLoggedIn() && !isUnavailable(listing);
+  const landlord = typeof isLandlord === "function" && isLandlord();
+  return isLoggedIn() && !landlord && !isUnavailable(listing);
+}
+
+function getChatDisabledReason(listing) {
+  if (isUnavailable(listing)) {
+    return "Messaging unavailable for this listing";
+  }
+
+  if (!isLoggedIn()) {
+    return "Log in to send messages";
+  }
+
+  const landlord = typeof isLandlord === "function" && isLandlord();
+  if (landlord) {
+    return "Landlord accounts cannot message from listings. Log in as renter to contact landlord.";
+  }
+
+  return "";
 }
 
 function isUnavailable(listing) {
@@ -631,9 +649,10 @@ function detailsMarkup(listing) {
       <div class="chat-box">
         <ul class="chat-log"></ul>
         <form class="inline-form chat-form">
-          <input class="chat-input" type="text" placeholder="${isUnavailable(listing) ? "Messaging unavailable for this listing" : !isLoggedIn() ? "Log in to send messages" : "Write a message..."}" ${canSendMessage(listing) ? "required" : "disabled"}>
+          <input class="chat-input" type="text" placeholder="Write a message..." ${canSendMessage(listing) ? "required" : "disabled"}>
           <button class="btn primary" type="submit" ${canSendMessage(listing) ? "" : "disabled"}>Send</button>
         </form>
+        ${canSendMessage(listing) ? "" : `<p class="small">${getChatDisabledReason(listing)}</p>`}
       </div>
     </div>
   `;
