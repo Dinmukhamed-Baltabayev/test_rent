@@ -525,7 +525,21 @@ function renderCards(items) {
     const detailsHost = node.querySelector(".card-details");
     const detailsButton = node.querySelector(".view-details");
 
-    detailsButton.addEventListener("click", () => {
+    detailsButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      openCardDetails(listing, card, detailsHost, detailsButton, false);
+    });
+
+    card.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      if (target.closest(".card-details") || target.closest("button, a, input, select, textarea, iframe")) {
+        return;
+      }
+
       openCardDetails(listing, card, detailsHost, detailsButton, false);
     });
 
@@ -683,13 +697,13 @@ function openCardDetails(listing, cardEl, detailsHost, detailsButton, focusChat)
 
 function applyFilters() {
   const cityValue = cityInput.value.trim().toLowerCase();
-  const maxPrice = Number(priceInput.value || 0);
+  const maxPriceFt = Number(priceInput.value || 0);
   const purposeValue = purposeInput.value;
   const typeValue = typeInput.value;
 
   filteredListings = listings.filter((listing) => {
     const cityPass = cityValue ? listing.city.toLowerCase().includes(cityValue) : true;
-    const pricePass = maxPrice ? listing.price <= maxPrice : true;
+    const pricePass = maxPriceFt ? listing.priceFt <= maxPriceFt : true;
     const purposePass = purposeValue === "all" ? true : listing.purpose === purposeValue;
     const typePass = typeValue === "all" ? true : listing.type === typeValue;
 

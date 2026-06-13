@@ -94,6 +94,7 @@ function injectLoginModal() {
         </label>
         <p id="authError" class="auth-error" hidden>Incorrect username or password.</p>
         <button type="submit" class="btn primary auth-submit">Log in</button>
+        <button type="button" class="btn ghost auth-signup">Sign up</button>
       </form>
       <button type="button" class="auth-close" id="authClose" aria-label="Close">✕</button>
     </div>

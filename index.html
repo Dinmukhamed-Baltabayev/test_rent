@@ -38,8 +38,8 @@
           <input id="cityInput" type="text" placeholder="Debrecen, Budapest, Vienna...">
         </label>
         <label>
-          Max price (EUR)
-          <input id="priceInput" type="number" min="100" step="10" placeholder="700">
+          Max price (Ft)
+          <input id="priceInput" type="number" min="10000" step="1000" placeholder="250000">
         </label>
         <label>
           Listing purpose
@@ -81,9 +81,11 @@
           <span class="listing-price"></span>
         </div>
         <p class="listing-subtitle"></p>
-        <p class="listing-posted-date"></p>
         <p class="listing-rent-type"></p>
-        <p class="card-available"></p>
+        <div class="listing-meta-row">
+          <p class="card-available"></p>
+          <p class="listing-posted-date"></p>
+        </div>
         <button class="btn ghost view-details">View details</button>
       </div>
       <div class="card-details"></div>
