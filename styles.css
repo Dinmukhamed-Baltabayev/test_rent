@@ -1150,15 +1150,32 @@ h2 {
 }
 
 .chat-log li {
+  position: relative;
+  display: block;
   font-size: 0.84rem;
   line-height: 1.3;
   background: #f0f8f3;
   border-radius: 10px;
-  padding: 6px 8px;
+  padding: 6px 66px 6px 8px;
 }
 
 .chat-log li.me {
   background: #ecf4ff;
+}
+
+.chat-message-text {
+  display: block;
+}
+
+.chat-message-time {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  text-align: right;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  color: var(--muted);
+  white-space: nowrap;
 }
 
 .inline-form {
@@ -1173,7 +1190,7 @@ h2 {
 
 .messages-layout {
   display: grid;
-  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 390px) minmax(0, 1fr);
   gap: 16px;
   align-items: start;
 }
@@ -1213,16 +1230,56 @@ h2 {
 
 .thread-item strong {
   display: block;
-  font-size: 0.92rem;
-  margin-bottom: 3px;
+  margin-bottom: 0;
   color: #183528;
   word-break: break-word;
+}
+
+.thread-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.thread-item-title {
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.thread-item-price {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  color: #2d4339;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+  flex-shrink: 0;
+}
+
+.thread-item-title,
+.thread-item-price {
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.thread-item-meta {
+  margin: 0 0 5px;
+  font-size: 0.88rem;
+  line-height: 1.3;
 }
 
 .thread-item .thread-preview {
   display: block;
   color: var(--muted);
-  font-size: 0.84rem;
+  font-size: 0.88rem;
+  line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1234,6 +1291,11 @@ h2 {
   align-items: center;
   gap: 10px;
   margin-bottom: 12px;
+}
+
+#inlineChatLink {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .inline-chat-meta {
@@ -1556,6 +1618,28 @@ h2 {
     flex-shrink: 0;
   }
 
+  .thread-item-head {
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+
+  .thread-item-title,
+  .thread-item-price {
+    font-size: 14px;
+    line-height: 1.18;
+  }
+
+  .thread-item-meta {
+    font-size: 13px;
+    line-height: 1.22;
+    margin-bottom: 2px;
+  }
+
+  .thread-item .thread-preview {
+    font-size: 13px;
+    line-height: 1.22;
+  }
+
   .listing-subtitle {
     display: block;
     margin-top: 1px;
@@ -1588,6 +1672,15 @@ h2 {
 
   .messages-layout {
     grid-template-columns: 1fr;
+  }
+
+  .inline-chat-head {
+    align-items: flex-start;
+  }
+
+  #inlineChatLink {
+    padding: 7px 10px;
+    font-size: 0.84rem;
   }
 
   .threads-column {

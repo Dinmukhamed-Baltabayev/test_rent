@@ -3,33 +3,42 @@ const listings = [
 		id: 1,
 		title: "Sunny Studio Near Uni",
 		purpose: "rent",
+		rentType: "long",
 		city: "Debrecen",
 		district: "University Quarter",
+		size: 29,
+		bedrooms: 1,
 		status: "available",
 		availableFrom: "2026-07-01",
-		price: 420,
+		price: 168000,
 		images: ["https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=900&q=80"]
 	},
 	{
 		id: 2,
 		title: "Shared Flat, 2 Bedrooms",
 		purpose: "rent",
+		rentType: "short",
 		city: "Budapest",
 		district: "District XI",
+		size: 61,
+		bedrooms: 2,
 		status: "rented",
 		availableFrom: "2026-05-01",
-		price: 560,
+		price: 224000,
 		images: ["https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=900&q=80"]
 	},
 	{
 		id: 3,
 		title: "Modern One-Bedroom Apartment",
 		purpose: "rent",
+		rentType: "long",
 		city: "Vienna",
 		district: "Leopoldstadt",
+		size: 54,
+		bedrooms: 1,
 		status: "available",
 		availableFrom: "2026-08-01",
-		price: 760,
+		price: 304000,
 		images: ["https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=900&q=80"]
 	},
 	{
@@ -38,14 +47,14 @@ const listings = [
 		purpose: "sale",
 		city: "Prague",
 		district: "Vinohrady",
+		size: 34,
+		bedrooms: 1,
 		status: "available",
 		availableFrom: "2026-06-20",
-		price: 640,
+		price: 256000000,
 		images: ["https://images.unsplash.com/photo-1484101403633-562f891dc89a?auto=format&fit=crop&w=900&q=80"]
 	}
 ];
-
-const MAX_VISIBLE_MESSAGES = 4;
 
 const threadList = document.getElementById("threadList");
 const messagesEmpty = document.getElementById("messagesEmpty");
@@ -91,7 +100,32 @@ function getListingById(listingId) {
 }
 
 function formatPrice(listing) {
-	return listing.purpose === "sale" ? `${listing.price} EUR` : `${listing.price} EUR/mo`;
+	const amount = Number(listing.price);
+	if (!Number.isFinite(amount) || amount <= 0) {
+		return "N/A";
+	}
+
+	const ft = `${amount.toLocaleString("hu-HU")} Ft`;
+	return listing.purpose === "sale" ? ft : `${ft}/mo`;
+}
+
+function formatListingPreviewMeta(listing) {
+	const bedroomCount = Number.isFinite(Number(listing.bedrooms))
+		? Number(listing.bedrooms)
+		: Number.isFinite(Number(listing.rooms))
+			? Number(listing.rooms)
+			: null;
+	const bedroomText = bedroomCount === null
+		? "Bedrooms N/A"
+		: `${bedroomCount} bedroom${bedroomCount === 1 ? "" : "s"}`;
+
+	let contractText = "For sale";
+	if (listing.purpose === "rent") {
+		contractText = listing.rentType === "short" ? "Short-term" : "Long-term";
+	}
+
+	const sizeText = Number.isFinite(Number(listing.size)) ? `${listing.size} m2` : "Size N/A";
+	return `${bedroomText} · ${contractText} · ${sizeText}`;
 }
 
 function formatAvailableFrom(dateStr) {
@@ -128,17 +162,47 @@ function formatThreadPreview(entry) {
 	return entry.sender === "you" ? `You: ${entry.text}` : `Landlord: ${entry.text}`;
 }
 
+function formatMessageTimestamp(timestamp) {
+	if (!Number.isFinite(Number(timestamp))) {
+		return "";
+	}
+
+	const date = new Date(Number(timestamp));
+	if (isNaN(date.getTime())) {
+		return "";
+	}
+
+	const day = date.toLocaleDateString("en-GB", {
+		day: "2-digit",
+		month: "2-digit",
+		year: "numeric"
+	});
+	const time = date.toLocaleTimeString("en-GB", {
+		hour: "2-digit",
+		minute: "2-digit"
+	});
+
+	return `${day} ${time}`;
+}
+
 function renderChatLog(conversation) {
-	const visibleMessages = conversation.slice(-MAX_VISIBLE_MESSAGES);
 	inlineChatLog.innerHTML = "";
-	visibleMessages.forEach((entry) => {
+	conversation.forEach((entry) => {
 		const li = document.createElement("li");
+		const text = document.createElement("span");
+		text.className = "chat-message-text";
+		const time = document.createElement("span");
+		time.className = "chat-message-time";
+		time.textContent = formatMessageTimestamp(entry.at);
+
 		if (entry.sender === "you") {
 			li.className = "me";
-			li.textContent = `You: ${entry.text}`;
+			text.textContent = `You: ${entry.text}`;
 		} else {
-			li.textContent = `Landlord: ${entry.text}`;
+			text.textContent = `Landlord: ${entry.text}`;
 		}
+
+		li.append(text, time);
 		inlineChatLog.appendChild(li);
 	});
 	inlineChatLog.scrollTop = inlineChatLog.scrollHeight;
@@ -159,7 +223,6 @@ function openChat(listingId) {
 
 	inlineChatTitle.textContent = `${listing.title} — ${listing.city}`;
 	inlineChatFacts.innerHTML = `
-		<span class="chat-fact price">${formatPrice(listing)}</span>
 		<span class="chat-fact availability">${availabilityText(listing)}</span>
 	`;
 	inlineChatLink.href = `index.html?listing=${listing.id}#listing-${listing.id}`;
@@ -259,7 +322,11 @@ function renderThreads() {
 		li.className = "thread-item";
 		li.dataset.listingId = String(thread.listingId);
 		li.innerHTML = `
-			<strong>${listing.title}</strong>
+			<div class="thread-item-head">
+				<strong class="thread-item-title">${listing.title}</strong>
+				<span class="thread-item-price">${formatPrice(listing)}</span>
+			</div>
+			<p class="thread-item-meta listing-rent-type">${formatListingPreviewMeta(listing)}</p>
 			<span class="thread-preview">${formatThreadPreview(thread.last)}</span>
 		`;
 		li.addEventListener("click", () => openChat(thread.listingId));

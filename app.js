@@ -193,8 +193,6 @@ function getLandlordPostedListings() {
 
 const listings = [...seedListings, ...getLandlordPostedListings()];
 
-const MAX_VISIBLE_MESSAGES = 4;
-
 const cardsEl = document.getElementById("cards");
 const resultCountEl = document.getElementById("resultCount");
 const cardTemplate = document.getElementById("cardTemplate");
@@ -301,25 +299,53 @@ function addConversationMessage(listingId, sender, text) {
   updateMessageBadge();
 }
 
+function formatMessageTimestamp(timestamp) {
+  if (!Number.isFinite(Number(timestamp))) {
+    return "";
+  }
+
+  const date = new Date(Number(timestamp));
+  if (isNaN(date.getTime())) {
+    return "";
+  }
+
+  const day = date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  });
+  const time = date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  return `${day} ${time}`;
+}
+
 function renderConversationLog(listingId, chatLog) {
   if (!chatLog) {
     return;
   }
 
   const conversation = ensureConversation(listingId);
-  const visibleMessages = conversation.slice(-MAX_VISIBLE_MESSAGES);
   chatLog.innerHTML = "";
 
-  visibleMessages.forEach((entry) => {
+  conversation.forEach((entry) => {
     const li = document.createElement("li");
+    const text = document.createElement("span");
+    text.className = "chat-message-text";
+    const meta = document.createElement("span");
+    meta.className = "chat-message-time";
+    meta.textContent = formatMessageTimestamp(entry.at);
 
     if (entry.sender === "you") {
       li.className = "me";
-      li.textContent = `You: ${entry.text}`;
+      text.textContent = `You: ${entry.text}`;
     } else {
-      li.textContent = `Landlord: ${entry.text}`;
+      text.textContent = `Landlord: ${entry.text}`;
     }
 
+    li.append(text, meta);
     chatLog.appendChild(li);
   });
 
