@@ -153,7 +153,7 @@ function updateAuthUI() {
   if (!actionsEl) return;
 
   // Remove existing auth controls so we can rebuild
-  actionsEl.querySelectorAll(".login-btn, .logout-btn, .topbar-user, .post-listing-button").forEach(
+  actionsEl.querySelectorAll(".login-btn, .logout-btn, .topbar-user, .post-listing-button, .post-listing-menu").forEach(
     (el) => el.remove()
   );
 
@@ -175,14 +175,15 @@ function updateAuthUI() {
       if (typeof onLogoutSuccess === "function") onLogoutSuccess();
     });
 
-    const postListingLink = document.createElement("a");
-    postListingLink.className = "post-listing-button";
-    postListingLink.href = "post-listing.html";
-    postListingLink.textContent = "Post listing";
+    const myListingLink = document.createElement("a");
+    myListingLink.className = "post-listing-button";
+    myListingLink.href = "post-listing.html?view=posted";
+    myListingLink.setAttribute("aria-label", "Open current listings");
+    myListingLink.textContent = "My listing";
 
     // Keep auth action as the rightmost control in the topbar.
     if (isLandlord()) {
-      actionsEl.appendChild(postListingLink);
+      actionsEl.appendChild(myListingLink);
     }
     actionsEl.appendChild(userLabel);
     actionsEl.appendChild(logoutBtn);

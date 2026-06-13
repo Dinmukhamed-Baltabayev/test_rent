@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nestly Landlord Demo</title>
+  <title>MoveIn Landlord Demo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,7 +17,7 @@
   <header class="topbar">
     <a class="brand" href="index.html">
       <span class="brand-dot"></span>
-      Nestly
+      MoveIn
     </a>
     <div class="topbar-actions">
       <a class="message-center-button" href="messages.html">Messages</a>
@@ -24,15 +25,18 @@
   </header>
 
   <main class="shell">
-    <section class="hero">
-      <p class="kicker">Landlord tools</p>
-      <h1>Post listing (demo)</h1>
-      <p class="hero-copy">This is a demo-only posting form. It does not publish listings yet.</p>
-    </section>
-
-    <section class="layout-grid" style="margin-top: 16px;">
+    <section class="layout-grid" style="margin-top: 6px;">
       <article class="panel-card">
         <p id="postAccessHint" class="auth-hint" style="margin-bottom: 16px;" hidden></p>
+
+        <div id="listingSwitcher" class="listing-library-head">
+          <h3 id="listingSwitcherTitle">My listings</h3>
+          <div class="listing-library-tabs" role="tablist" aria-label="Listing views">
+            <button type="button" id="viewPostedBtn" class="btn ghost small-btn" data-view="posted">Current listings</button>
+            <button type="button" id="viewDraftsBtn" class="btn ghost small-btn is-active" data-view="drafts">Drafts</button>
+            <button type="button" id="viewNewBtn" class="btn ghost small-btn" data-view="new">+ New listing</button>
+          </div>
+        </div>
 
         <form id="postListingForm" class="search-grid" autocomplete="off">
           <p class="section-kicker field-span-4">Images</p>
@@ -63,7 +67,7 @@
           </label>
           <label>
             City
-            <input id="postCity" type="text" placeholder="Debrecen" required>
+            <input id="postCity" type="text" list="hungaryCityOptions" placeholder="Debrecen" required>
           </label>
           <label>
             District
@@ -228,6 +232,15 @@
             <textarea id="postDescription" placeholder="Describe the listing details, neighborhood, and amenities." required></textarea>
           </label>
 
+          <p class="section-kicker field-span-4">Location</p>
+          <div class="field-span-4 map-picker-wrap">
+            <p class="small map-picker-hint">Click on the map to place the pin. You can drag the pin to fine-tune the location.</p>
+            <div id="postMapPicker" class="post-map-picker" role="application" aria-label="Select listing location"></div>
+            <p id="postLocationText" class="small map-location-readout">Selected coordinates: not set</p>
+            <input id="postLatitude" type="hidden">
+            <input id="postLongitude" type="hidden">
+          </div>
+
           <div class="post-actions field-span-4">
             <button type="button" id="postNowBtn" class="btn primary post-now-action">Post</button>
             <button type="button" id="saveDraftBtn" class="btn ghost save-draft-action">Save draft</button>
@@ -237,14 +250,25 @@
 
         <p id="postSuccess" class="auth-hint" style="margin-top: 14px;" hidden></p>
 
+        <datalist id="hungaryCityOptions">
+          <option value="Budapest"></option>
+          <option value="Debrecen"></option>
+          <option value="Szeged"></option>
+          <option value="Miskolc"></option>
+          <option value="Pecs"></option>
+          <option value="Gyor"></option>
+          <option value="Nyiregyhaza"></option>
+          <option value="Kecskemet"></option>
+          <option value="Szekesfehervar"></option>
+          <option value="Szombathely"></option>
+          <option value="Szolnok"></option>
+          <option value="Tatabanya"></option>
+          <option value="Kaposvar"></option>
+          <option value="Bekescsaba"></option>
+          <option value="Zalaegerszeg"></option>
+        </datalist>
+
         <section id="listingLibrary" class="listing-library" hidden>
-          <div class="listing-library-head">
-            <h3>My listings</h3>
-            <div class="listing-library-tabs" role="tablist" aria-label="Listing views">
-              <button type="button" id="viewDraftsBtn" class="btn ghost small-btn is-active" data-view="drafts">Saved drafts</button>
-              <button type="button" id="viewPostedBtn" class="btn ghost small-btn" data-view="posted">Posted listings</button>
-            </div>
-          </div>
           <p id="listingLibraryEmpty" class="message-empty" hidden>No items in this list yet.</p>
           <ul id="listingLibraryList" class="thread-list"></ul>
         </section>
@@ -253,6 +277,7 @@
   </main>
 
   <script src="auth.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="post-listing.js"></script>
 </body>
 </html>

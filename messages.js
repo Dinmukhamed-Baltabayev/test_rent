@@ -225,11 +225,11 @@ function renderThreads() {
 		chatPlaceholder.hidden = false;
 		chatPlaceholder.textContent = "Log in to view and send messages.";
 		activeListingId = null;
-		clearChatsBtn.disabled = true;
+		clearChatsBtn.hidden = true;
 		return;
 	}
 
-	clearChatsBtn.disabled = false;
+	clearChatsBtn.hidden = false;
 	messagesEmpty.textContent = "No messages yet. Start chatting from a listing.";
 	chatPlaceholder.textContent = "Select a conversation to read and reply.";
 

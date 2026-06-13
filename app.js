@@ -1,4 +1,4 @@
-const listings = [
+const seedListings = [
   {
     id: 1,
     title: "Sunny Studio Near Uni",
@@ -154,6 +154,44 @@ const listings = [
     description: "Top-floor quiet studio with balcony and bright natural light. Includes desk, wardrobe, and washing machine."
   }
 ];
+
+function getLandlordPostedListings() {
+  const key = "nestlyLandlordPosts";
+
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      return [];
+    }
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed
+      .filter((item) => item && typeof item === "object")
+      .map((item) => ({
+        ...item,
+        id: Number(item.id),
+        title: item.title || "Untitled listing",
+        city: item.city || "N/A",
+        district: item.district || "N/A",
+        images: Array.isArray(item.images) && item.images.length ? item.images : [
+          "https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=900&q=80"
+        ],
+        postedDate: item.postedDate || new Date().toISOString().slice(0, 10),
+        features: Array.isArray(item.features) ? item.features : [],
+        bedrooms: Number.isFinite(Number(item.bedrooms)) ? Number(item.bedrooms) : 0,
+        rooms: Number.isFinite(Number(item.rooms)) ? Number(item.rooms) : Number(item.bedrooms) || 0
+      }))
+      .filter((item) => Number.isFinite(item.id));
+  } catch {
+    return [];
+  }
+}
+
+const listings = [...seedListings, ...getLandlordPostedListings()];
 
 const MAX_VISIBLE_MESSAGES = 4;
 

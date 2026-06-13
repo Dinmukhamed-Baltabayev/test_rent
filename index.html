@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nestly Student Homes</title>
+  <title>MoveIn Student Homes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
   <header class="topbar">
     <a class="brand" href="index.html">
       <span class="brand-dot"></span>
-      Nestly
+      MoveIn
     </a>
     <div class="topbar-actions">
       <a class="message-center-button" href="messages.html">
@@ -35,7 +35,7 @@
       <form id="searchForm" class="search-grid" autocomplete="off">
         <label>
           City
-          <input id="cityInput" type="text" placeholder="Debrecen, Budapest, Vienna...">
+          <input id="cityInput" type="text" list="hungaryCityOptions" placeholder="Debrecen, Budapest, Vienna...">
         </label>
         <label>
           Max price (Ft)
@@ -61,6 +61,24 @@
         <button type="submit" class="btn primary">Search homes</button>
         <button type="button" id="resetFiltersBtn" class="btn ghost reset-filters-btn">Reset filters</button>
       </form>
+
+      <datalist id="hungaryCityOptions">
+        <option value="Budapest"></option>
+        <option value="Debrecen"></option>
+        <option value="Szeged"></option>
+        <option value="Miskolc"></option>
+        <option value="Pecs"></option>
+        <option value="Gyor"></option>
+        <option value="Nyiregyhaza"></option>
+        <option value="Kecskemet"></option>
+        <option value="Szekesfehervar"></option>
+        <option value="Szombathely"></option>
+        <option value="Szolnok"></option>
+        <option value="Tatabanya"></option>
+        <option value="Kaposvar"></option>
+        <option value="Bekescsaba"></option>
+        <option value="Zalaegerszeg"></option>
+      </datalist>
     </section>
 
     <section class="results-head">
