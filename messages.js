@@ -69,6 +69,14 @@ const inlineChatInput = document.getElementById("inlineChatInput");
 const clearChatsBtn = document.getElementById("clearChats");
 const mobileMessagesQuery = window.matchMedia("(max-width: 720px)");
 
+document.addEventListener("DOMContentLoaded", () => {
+	if (inlineChatInput) {
+		inlineChatInput.addEventListener("touchstart", () => {
+			inlineChatInput.removeAttribute("readonly");
+		}, { once: false, passive: true });
+	}
+});
+
 let activeListingId = null;
 
 function loadMessageStore() {
@@ -242,7 +250,11 @@ function openChat(listingId) {
 
 	chatPlaceholder.hidden = true;
 	inlineChat.hidden = false;
-	if (!isUnavailable(listing) && !mobileMessagesQuery.matches) {
+	if (mobileMessagesQuery.matches) {
+		inlineChatInput.setAttribute("readonly", "");
+		inlineChatInput.blur();
+	} else if (!isUnavailable(listing)) {
+		inlineChatInput.removeAttribute("readonly");
 		inlineChatInput.focus();
 	}
 
