@@ -256,7 +256,7 @@ function updateMessageBadge() {
   }
 
   const sentCount = Object.values(messageStore).reduce(
-    (sum, conversation) => sum + conversation.filter((entry) => entry.sender === "you").length,
+    (sum, conversation) => sum + conversation.filter((entry) => isOwnConversationEntry(entry)).length,
     0
   );
   messageCountBadge.textContent = String(sentCount);
@@ -292,10 +292,25 @@ function ensureConversation(listingId) {
   return messageStore[key];
 }
 
+function isOwnConversationEntry(entry) {
+  const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+  return entry?.sender === "you" || Boolean(currentUser?.username && entry?.sender === currentUser.username);
+}
+
+function getConversationOtherLabel() {
+  return typeof isLandlord === "function" && isLandlord() ? "Renter" : "Landlord";
+}
+
 function addConversationMessage(listingId, sender, text) {
-  const conversation = ensureConversation(listingId);
-  conversation.push({ sender, text, at: Date.now() });
-  saveMessageStore();
+  if (typeof appendSharedConversationMessage === "function") {
+    appendSharedConversationMessage(listingId, text);
+    loadCurrentMessageStore();
+  } else {
+    const conversation = ensureConversation(listingId);
+    conversation.push({ sender, text, at: Date.now() });
+    saveMessageStore();
+  }
+
   updateMessageBadge();
 }
 
@@ -338,11 +353,11 @@ function renderConversationLog(listingId, chatLog) {
     meta.className = "chat-message-time";
     meta.textContent = formatMessageTimestamp(entry.at);
 
-    if (entry.sender === "you") {
+    if (isOwnConversationEntry(entry)) {
       li.className = "me";
       text.textContent = `You: ${entry.text}`;
     } else {
-      text.textContent = `Landlord: ${entry.text}`;
+      text.textContent = `${getConversationOtherLabel()}: ${entry.text}`;
     }
 
     li.append(text, meta);

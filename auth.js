@@ -10,8 +10,32 @@ const PROFILE_OVERRIDES_KEY = "nestlyProfileOverridesV1";
 const LANDLORD_POSTS_KEY = "nestlyLandlordPosts";
 
 const TEST_USERS = [
-  { username: "demo", password: "demo123", name: "Demo Renter", role: "renter" },
-  { username: "landlord", password: "demo123", name: "Demo Landlord", role: "landlord" }
+  {
+    username: "demo",
+    password: "demo123",
+    name: "Demo Renter",
+    role: "renter",
+    email: "demo.renter@example.com",
+    profile: {
+      status: "studying",
+      nationality: "Hungary",
+      gender: "male",
+      photoDataUrl: "https://i.pravatar.cc/160?img=12"
+    }
+  },
+  {
+    username: "landlord",
+    password: "demo123",
+    name: "Demo Landlord",
+    role: "landlord",
+    email: "demo.landlord@example.com",
+    profile: {
+      status: "working",
+      nationality: "Hungary",
+      gender: "female",
+      photoDataUrl: "https://i.pravatar.cc/160?img=32"
+    }
+  }
 ];
 
 let authModalMode = "login";
@@ -296,6 +320,8 @@ function ensureDemoLandlordListings() {
     // Ignore storage failures in restricted environments.
   }
 }
+
+ensureDemoLandlordListings();
 
 function readRegisteredUsers() {
   try {
@@ -678,6 +704,92 @@ function getUserMessageStorageKey() {
   }
 
   return `${MESSAGE_STORAGE_PREFIX}:${user.username}`;
+}
+
+function getMessageStorageKeyForUsername(username) {
+  const safeUsername = String(username || "").trim();
+  if (!safeUsername) {
+    return null;
+  }
+
+  return `${MESSAGE_STORAGE_PREFIX}:${safeUsername}`;
+}
+
+function readMessageStoreForUsername(username) {
+  const key = getMessageStorageKeyForUsername(username);
+  if (!key) {
+    return {};
+  }
+
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      return {};
+    }
+
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeMessageStoreForUsername(username, store) {
+  const key = getMessageStorageKeyForUsername(username);
+  if (!key) {
+    return;
+  }
+
+  localStorage.setItem(key, JSON.stringify(store));
+}
+
+function getDemoConversationPeerUsername() {
+  const user = getCurrentUser();
+  if (!user?.username) {
+    return null;
+  }
+
+  if (user.username === "demo") {
+    return "landlord";
+  }
+
+  if (user.username === "landlord") {
+    return "demo";
+  }
+
+  return null;
+}
+
+function appendSharedConversationMessage(listingId, text) {
+  const user = getCurrentUser();
+  if (!user?.username) {
+    return null;
+  }
+
+  const safeListingId = Number(listingId);
+  const safeText = String(text || "").trim();
+  if (!Number.isFinite(safeListingId) || !safeText) {
+    return null;
+  }
+
+  const entry = {
+    sender: user.username,
+    text: safeText,
+    at: Date.now()
+  };
+
+  const usernames = [user.username, getDemoConversationPeerUsername()].filter(Boolean);
+  usernames.forEach((username) => {
+    const store = readMessageStoreForUsername(username);
+    const key = String(safeListingId);
+    if (!Array.isArray(store[key])) {
+      store[key] = [];
+    }
+    store[key].push(entry);
+    writeMessageStoreForUsername(username, store);
+  });
+
+  return entry;
 }
 
 function migrateLegacyMessagesToUser(username) {

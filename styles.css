@@ -1429,13 +1429,15 @@ h2 {
 }
 
 .chat-log li {
-  position: relative;
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px;
   font-size: 0.84rem;
   line-height: 1.3;
   background: #f0f8f3;
   border-radius: 10px;
-  padding: 6px 66px 6px 8px;
+  padding: 6px 8px;
 }
 
 .chat-log li.me {
@@ -1444,17 +1446,17 @@ h2 {
 
 .chat-message-text {
   display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .chat-message-time {
-  position: absolute;
-  top: 6px;
-  right: 8px;
   text-align: right;
   font-size: 0.72rem;
   line-height: 1.2;
   color: var(--muted);
   white-space: nowrap;
+  align-self: start;
 }
 
 .inline-form {
@@ -1613,6 +1615,44 @@ h2 {
 .chat-fact.availability {
   background: var(--accent-soft);
   color: #0e5b3d;
+}
+
+.chat-contact-card {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fbfdfb 0%, #f4f9f5 100%);
+}
+
+.chat-contact-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid #d8e4dc;
+  background: #fff;
+}
+
+.chat-contact-copy {
+  min-width: 0;
+}
+
+.chat-contact-name {
+  margin: 0 0 4px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.chat-contact-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.35;
 }
 
 .small-btn {
@@ -1982,6 +2022,10 @@ h2 {
 
   .messages-layout {
     grid-template-columns: 1fr;
+  }
+
+  .chat-column {
+    display: none;
   }
 
   .chat-column {

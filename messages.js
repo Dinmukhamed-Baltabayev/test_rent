@@ -1,4 +1,4 @@
-const listings = [
+const seedListings = [
 	{
 		id: 1,
 		title: "Sunny Studio Near Uni",
@@ -56,12 +56,45 @@ const listings = [
 	}
 ];
 
+function getLandlordPostedListings() {
+	try {
+		const raw = localStorage.getItem("nestlyLandlordPosts");
+		if (!raw) {
+			return [];
+		}
+
+		const parsed = JSON.parse(raw);
+		if (!Array.isArray(parsed)) {
+			return [];
+		}
+
+		return parsed
+			.filter((item) => item && typeof item === "object")
+			.map((item) => ({
+				...item,
+				id: Number(item.id),
+				title: item.title || "Untitled listing",
+				city: item.city || "N/A",
+				district: item.district || "N/A",
+				images: Array.isArray(item.images) && item.images.length ? item.images : [],
+				bedrooms: Number.isFinite(Number(item.bedrooms)) ? Number(item.bedrooms) : 0,
+				rooms: Number.isFinite(Number(item.rooms)) ? Number(item.rooms) : Number(item.bedrooms) || 0
+			}))
+			.filter((item) => Number.isFinite(item.id));
+	} catch {
+		return [];
+	}
+}
+
+const listings = [...seedListings, ...getLandlordPostedListings()];
+
 const threadList = document.getElementById("threadList");
 const messagesEmpty = document.getElementById("messagesEmpty");
 const chatPlaceholder = document.getElementById("chatPlaceholder");
 const inlineChat = document.getElementById("inlineChat");
 const inlineChatTitle = document.getElementById("inlineChatTitle");
 const inlineChatFacts = document.getElementById("inlineChatFacts");
+const inlineChatContact = document.getElementById("inlineChatContact");
 const inlineChatLink = document.getElementById("inlineChatLink");
 const inlineChatLog = document.getElementById("inlineChatLog");
 const inlineChatForm = document.getElementById("inlineChatForm");
@@ -70,6 +103,74 @@ const clearChatsBtn = document.getElementById("clearChats");
 const mobileMessagesQuery = window.matchMedia("(max-width: 720px)");
 
 let activeListingId = null;
+
+function isOwnConversationEntry(entry) {
+	const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+	return entry?.sender === "you" || Boolean(currentUser?.username && entry?.sender === currentUser.username);
+}
+
+function getConversationOtherLabel() {
+	return typeof isLandlord === "function" && isLandlord() ? "Renter" : "Landlord";
+}
+
+function formatProfileGender(gender) {
+	const raw = String(gender || "").trim();
+	return raw ? raw.charAt(0).toUpperCase() + raw.slice(1).replace(/-/g, " ") : "";
+}
+
+function getConversationPeerUser() {
+	if (typeof getDemoConversationPeerUsername !== "function" || typeof getResolvedUser !== "function") {
+		return null;
+	}
+
+	const peerUsername = getDemoConversationPeerUsername();
+	return peerUsername ? getResolvedUser(peerUsername) : null;
+}
+
+function buildConversationContactMarkup(user) {
+	if (!user) {
+		return "";
+	}
+
+	const profile = user.profile || {};
+	const metaParts = [
+		formatProfileGender(profile.gender),
+		profile.nationality || "",
+		typeof getStatusLabel === "function" ? getStatusLabel(profile.status) : profile.status || ""
+	].filter(Boolean);
+
+	return `
+		<img class="chat-contact-avatar" src="${profile.photoDataUrl || "https://via.placeholder.com/120x120.png?text=Profile"}" alt="${user.name} profile photo">
+		<div class="chat-contact-copy">
+			<p class="chat-contact-name">${user.name || "Renter"}</p>
+			<p class="chat-contact-meta">${metaParts.join(" • ")}</p>
+		</div>
+	`;
+}
+
+function updateConversationContact(targetEl) {
+	if (!targetEl) {
+		return;
+	}
+
+	const shouldShow = typeof isLandlord === "function" && isLandlord();
+	if (!shouldShow) {
+		targetEl.hidden = true;
+		targetEl.innerHTML = "";
+		return;
+	}
+
+	const peerUser = getConversationPeerUser();
+	const markup = buildConversationContactMarkup(peerUser);
+	if (!markup) {
+		targetEl.hidden = true;
+		targetEl.innerHTML = "";
+		return;
+	}
+
+	targetEl.innerHTML = markup;
+	targetEl.hidden = false;
+}
 
 function loadMessageStore() {
 	const key = typeof getUserMessageStorageKey === "function" ? getUserMessageStorageKey() : null;
@@ -101,7 +202,9 @@ function getListingById(listingId) {
 }
 
 function formatPrice(listing) {
-	const amount = Number(listing.price);
+	const amount = Number.isFinite(Number(listing.priceFt)) && Number(listing.priceFt) > 0
+		? Number(listing.priceFt)
+		: Number(listing.price);
 	if (!Number.isFinite(amount) || amount <= 0) {
 		return "N/A";
 	}
@@ -160,7 +263,7 @@ function isUnavailable(listing) {
 }
 
 function formatThreadPreview(entry) {
-	return entry.sender === "you" ? `You: ${entry.text}` : `Landlord: ${entry.text}`;
+	return isOwnConversationEntry(entry) ? `You: ${entry.text}` : `${getConversationOtherLabel()}: ${entry.text}`;
 }
 
 function formatMessageTimestamp(timestamp) {
@@ -196,11 +299,11 @@ function renderChatLog(conversation) {
 		time.className = "chat-message-time";
 		time.textContent = formatMessageTimestamp(entry.at);
 
-		if (entry.sender === "you") {
+		if (isOwnConversationEntry(entry)) {
 			li.className = "me";
 			text.textContent = `You: ${entry.text}`;
 		} else {
-			text.textContent = `Landlord: ${entry.text}`;
+			text.textContent = `${getConversationOtherLabel()}: ${entry.text}`;
 		}
 
 		li.append(text, time);
@@ -226,6 +329,7 @@ function openChat(listingId) {
 	inlineChatFacts.innerHTML = `
 		<span class="chat-fact availability">${availabilityText(listing)}</span>
 	`;
+	updateConversationContact(inlineChatContact);
 	inlineChatLink.href = `index.html?listing=${listing.id}#listing-${listing.id}`;
 	renderChatLog(conversation);
 	inlineChatInput.disabled = isUnavailable(listing);
@@ -262,10 +366,15 @@ inlineChatForm.addEventListener("submit", (event) => {
 	const key = String(activeListingId);
 	if (!Array.isArray(store[key])) { store[key] = []; }
 
-	store[key].push({ sender: "you", text, at: Date.now() });
-	saveMessageStore(store);
+	if (typeof appendSharedConversationMessage === "function") {
+		appendSharedConversationMessage(activeListingId, text);
+	} else {
+		store[key].push({ sender: "you", text, at: Date.now() });
+		saveMessageStore(store);
+	}
 	inlineChatInput.value = "";
-	renderChatLog(store[key]);
+	const nextStore = loadMessageStore();
+	renderChatLog(nextStore[key] || []);
 	refreshThreadPreviews();
 });
 
@@ -303,7 +412,7 @@ function renderThreads() {
 			const last = conversation[conversation.length - 1];
 			return { listingId: Number(listingId), conversation, last, updatedAt: last?.at || 0 };
 		})
-		.filter((thread) => thread.conversation.some((entry) => entry.sender === "you"))
+		.filter((thread) => thread.conversation.length > 0)
 		.sort((a, b) => b.updatedAt - a.updatedAt);
 
 	threadList.innerHTML = "";
@@ -330,6 +439,7 @@ function renderThreads() {
 			<p class="thread-item-meta listing-rent-type">${formatListingPreviewMeta(listing)}</p>
 			<span class="thread-preview">${formatThreadPreview(thread.last)}</span>
 			<div class="thread-inline-chat">
+				<div class="chat-contact-card thread-contact-card" hidden></div>
 				<ul class="chat-log thread-chat-log"></ul>
 				<form class="inline-form thread-chat-form">
 					<input class="thread-chat-input" type="text" placeholder="Write a message..." ${isUnavailable(listing) ? "disabled" : ""}>
@@ -338,9 +448,11 @@ function renderThreads() {
 			</div>
 		`;
 
+		const contactCardEl = li.querySelector(".thread-contact-card");
 		const chatLogEl = li.querySelector(".thread-chat-log");
 		const chatForm = li.querySelector(".thread-chat-form");
 		const chatInput = li.querySelector(".thread-chat-input");
+		updateConversationContact(contactCardEl);
 
 		const renderInlineLog = () => {
 			const s = loadMessageStore();
@@ -350,11 +462,11 @@ function renderThreads() {
 				const item = document.createElement("li");
 				const text = document.createElement("span");
 				text.className = "chat-message-text";
-				text.textContent = entry.sender === "you" ? `You: ${entry.text}` : `Landlord: ${entry.text}`;
+				text.textContent = isOwnConversationEntry(entry) ? `You: ${entry.text}` : `${getConversationOtherLabel()}: ${entry.text}`;
 				const time = document.createElement("span");
 				time.className = "chat-message-time";
 				time.textContent = formatMessageTimestamp(entry.at);
-				if (entry.sender === "you") item.className = "me";
+				if (isOwnConversationEntry(entry)) item.className = "me";
 				item.append(text, time);
 				chatLogEl.appendChild(item);
 			});
@@ -365,11 +477,15 @@ function renderThreads() {
 			e.preventDefault();
 			const text = chatInput.value.trim();
 			if (!text || isUnavailable(listing)) return;
-			const s = loadMessageStore();
-			const key = String(thread.listingId);
-			if (!Array.isArray(s[key])) s[key] = [];
-			s[key].push({ sender: "you", text, at: Date.now() });
-			saveMessageStore(s);
+			if (typeof appendSharedConversationMessage === "function") {
+				appendSharedConversationMessage(thread.listingId, text);
+			} else {
+				const s = loadMessageStore();
+				const key = String(thread.listingId);
+				if (!Array.isArray(s[key])) s[key] = [];
+				s[key].push({ sender: "you", text, at: Date.now() });
+				saveMessageStore(s);
+			}
 			chatInput.value = "";
 			renderInlineLog();
 			refreshThreadPreviews();
