@@ -55,16 +55,27 @@ body {
 .topbar {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px 22px 10px;
+  padding: 20px 22px 4px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
 }
 
 .topbar-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.topbar-actions .login-btn,
+.topbar-actions .logout-btn,
+.topbar-actions .message-center-button,
+.topbar-actions .post-listing-button,
+.topbar-actions .profile-btn {
+  white-space: nowrap;
 }
 
 .brand {
@@ -116,7 +127,7 @@ body {
   border: 1px solid var(--line);
   background: #fff;
   color: var(--text);
-  border-radius: 999px;
+  border-radius: 12px;
   min-height: 46px;
   padding: 10px 16px;
   font-weight: 700;
@@ -135,6 +146,7 @@ body {
   background: #eefaf4;
   border-color: #bfe7d3;
   color: #165a3d;
+  margin-left: auto;
 }
 
 .login-btn:hover,
@@ -149,6 +161,7 @@ body {
   background: #fff3f3;
   border-color: #efc9c9;
   color: #8b2020;
+  margin-left: auto;
 }
 
 .logout-btn:hover,
@@ -519,6 +532,29 @@ body {
   line-height: 1.35;
 }
 
+.profile-page-card {
+  width: min(720px, 100%);
+  margin: 8px auto 0;
+  display: grid;
+  gap: 12px;
+}
+
+.profile-page-title {
+  margin: 0;
+  font-family: "Fraunces", serif;
+  font-size: clamp(1.8rem, 2.4vw, 2.2rem);
+  line-height: 1.1;
+}
+
+.profile-page-form {
+  display: grid;
+  gap: 10px;
+}
+
+.profile-page-actions {
+  margin-top: 2px;
+}
+
 .auth-close {
   position: absolute;
   top: 12px;
@@ -543,6 +579,7 @@ body.modal-open {
 
 .message-center-button {
   color: #234235;
+  border-radius: 999px;
 }
 
 .message-count {
@@ -1673,9 +1710,9 @@ h2 {
   }
 
   .topbar {
-    flex-direction: row;
+    flex-direction: column;
     gap: 8px;
-    align-items: center;
+    align-items: flex-start;
     padding: 10px 14px 6px;
   }
 
@@ -1683,7 +1720,9 @@ h2 {
     flex-direction: row;
     align-items: center;
     gap: 6px;
-    margin-left: auto;
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
     flex-wrap: nowrap;
   }
 
@@ -1704,10 +1743,13 @@ h2 {
     padding: 6px 10px;
     font-size: 0.78rem;
     border-radius: 11px;
+    white-space: nowrap;
+    flex: 0 0 auto;
   }
 
   .message-center-button {
     gap: 6px;
+    border-radius: 999px;
   }
 
   input,
@@ -1758,6 +1800,11 @@ h2 {
   .sort-price-btn {
     grid-column: 1 / -1;
     width: 100%;
+  }
+
+  .profile-page-card {
+    width: 100%;
+    margin-top: 6px;
   }
 
   #postListingForm .post-form-section-grid {

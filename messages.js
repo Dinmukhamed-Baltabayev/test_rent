@@ -67,6 +67,7 @@ const inlineChatLog = document.getElementById("inlineChatLog");
 const inlineChatForm = document.getElementById("inlineChatForm");
 const inlineChatInput = document.getElementById("inlineChatInput");
 const clearChatsBtn = document.getElementById("clearChats");
+const mobileMessagesQuery = window.matchMedia("(max-width: 720px)");
 
 let activeListingId = null;
 
@@ -241,7 +242,7 @@ function openChat(listingId) {
 
 	chatPlaceholder.hidden = true;
 	inlineChat.hidden = false;
-	if (!isUnavailable(listing)) {
+	if (!isUnavailable(listing) && !mobileMessagesQuery.matches) {
 		inlineChatInput.focus();
 	}
 

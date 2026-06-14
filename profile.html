@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoveIn My Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-dot"></span>
+      MoveIn
+    </a>
+    <div class="topbar-actions">
+      <a class="message-center-button" href="messages.html">Messages</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="panel-card profile-page-card">
+      <h1 class="profile-page-title">My profile</h1>
+      <p class="auth-hint">Update the details you want to keep current for matching and messaging.</p>
+
+      <div class="profile-summary">
+        <img id="profileAvatarPreview" class="profile-avatar" alt="Profile photo preview">
+        <div class="profile-summary-copy">
+          <p id="profileSummaryName" class="profile-summary-name"></p>
+          <p id="profileSummaryMeta" class="profile-summary-meta"></p>
+        </div>
+      </div>
+
+      <form id="profilePageForm" class="profile-page-form" autocomplete="off" novalidate>
+        <label class="auth-label">
+          Full name
+          <input id="profilePageName" type="text" class="auth-input" required>
+        </label>
+        <label class="auth-label">
+          Username
+          <input id="profilePageUsername" type="text" class="auth-input" disabled>
+        </label>
+        <label class="auth-label">
+          Email
+          <input id="profilePageEmail" type="email" class="auth-input" required>
+        </label>
+        <label class="auth-label">
+          Currently working or studying
+          <select id="profilePageStatus" class="auth-input" required>
+            <option value="">Choose one</option>
+            <option value="working">Working</option>
+            <option value="studying">Studying</option>
+            <option value="both">Studying and working</option>
+          </select>
+        </label>
+        <label class="auth-label">
+          Gender
+          <select id="profilePageGender" class="auth-input" required>
+            <option value="">Choose one</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+          </select>
+        </label>
+        <label class="auth-label">
+          Nationality
+          <input id="profilePageNationality" type="text" class="auth-input" list="profileNationalityOptions" required>
+        </label>
+        <label class="auth-label">
+          Profile photo
+          <input id="profilePagePhoto" type="file" class="auth-input" accept="image/*">
+        </label>
+
+        <p id="profilePageError" class="auth-error" hidden></p>
+
+        <div class="profile-actions profile-page-actions">
+          <button type="button" id="profilePageCancelButton" class="btn ghost profile-cancel" hidden>Cancel</button>
+          <button type="button" id="profilePageEditButton" class="btn ghost auth-submit">Edit profile</button>
+          <button type="submit" id="profilePageSaveButton" class="btn primary auth-submit" hidden>Save changes</button>
+        </div>
+
+        <button type="button" id="profilePageDeleteButton" class="profile-delete-button" hidden>Delete my account</button>
+      </form>
+
+      <datalist id="profileNationalityOptions"></datalist>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="profile-page.js"></script>
+</body>
+</html>

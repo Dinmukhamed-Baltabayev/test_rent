@@ -930,16 +930,10 @@ function updateAuthUI() {
   const messagesLink = actionsEl.querySelector(".message-center-button, a[href='index.html']");
 
   if (isLoggedIn()) {
-    const user = getCurrentUser();
-
-    const userLabel = document.createElement("span");
-    userLabel.className = "topbar-user";
-    userLabel.textContent = `Hi, ${user.name.split(" ")[0]}`;
-
-    const profileBtn = document.createElement("button");
+    const profileBtn = document.createElement("a");
     profileBtn.className = "btn ghost profile-btn";
+    profileBtn.href = "profile.html";
     profileBtn.textContent = "My profile";
-    profileBtn.addEventListener("click", openProfileModal);
 
     const logoutBtn = document.createElement("button");
     logoutBtn.className = "btn ghost logout-btn";
@@ -956,12 +950,18 @@ function updateAuthUI() {
     myListingLink.setAttribute("aria-label", "Open current listings");
     myListingLink.textContent = "My listing";
 
-    // Keep auth action as the rightmost control in the topbar.
+    // Left side order: My profile, My listing, Messages.
+    actionsEl.appendChild(profileBtn);
+
     if (isLandlord()) {
       actionsEl.appendChild(myListingLink);
     }
-    actionsEl.appendChild(profileBtn);
-    actionsEl.appendChild(userLabel);
+
+    if (messagesLink) {
+      actionsEl.appendChild(messagesLink);
+    }
+
+    // Right side action.
     actionsEl.appendChild(logoutBtn);
   } else {
     const loginBtn = document.createElement("button");
