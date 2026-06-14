@@ -341,8 +341,82 @@ function renderThreads() {
 			</div>
 			<p class="thread-item-meta listing-rent-type">${formatListingPreviewMeta(listing)}</p>
 			<span class="thread-preview">${formatThreadPreview(thread.last)}</span>
+			<div class="thread-inline-chat">
+				<ul class="chat-log thread-chat-log"></ul>
+				<form class="inline-form thread-chat-form">
+					<input class="thread-chat-input" type="text" placeholder="Write a message..." ${isUnavailable(listing) ? "disabled" : ""}>
+					<button class="btn primary" type="submit" ${isUnavailable(listing) ? "disabled" : ""}>Send</button>
+				</form>
+			</div>
 		`;
-		li.addEventListener("click", () => openChat(thread.listingId));
+
+		const inlineChatEl = li.querySelector(".thread-inline-chat");
+		const chatLogEl = li.querySelector(".thread-chat-log");
+		const chatForm = li.querySelector(".thread-chat-form");
+		const chatInput = li.querySelector(".thread-chat-input");
+
+		const renderInlineLog = () => {
+			const s = loadMessageStore();
+			const conv = s[String(thread.listingId)] || [];
+			chatLogEl.innerHTML = "";
+			conv.forEach((entry) => {
+				const item = document.createElement("li");
+				const text = document.createElement("span");
+				text.className = "chat-message-text";
+				text.textContent = entry.sender === "you" ? `You: ${entry.text}` : `Landlord: ${entry.text}`;
+				const time = document.createElement("span");
+				time.className = "chat-message-time";
+				time.textContent = formatMessageTimestamp(entry.at);
+				if (entry.sender === "you") item.className = "me";
+				item.append(text, time);
+				chatLogEl.appendChild(item);
+			});
+			chatLogEl.scrollTop = chatLogEl.scrollHeight;
+		};
+
+		chatForm.addEventListener("submit", (e) => {
+			e.preventDefault();
+			const text = chatInput.value.trim();
+			if (!text || isUnavailable(listing)) return;
+			const s = loadMessageStore();
+			const key = String(thread.listingId);
+			if (!Array.isArray(s[key])) s[key] = [];
+			s[key].push({ sender: "you", text, at: Date.now() });
+			saveMessageStore(s);
+			chatInput.value = "";
+			renderInlineLog();
+			refreshThreadPreviews();
+		});
+
+		const header = li.querySelector(".thread-item-head");
+		header.style.cursor = "pointer";
+
+		li.addEventListener("click", (e) => {
+			if (e.target.closest(".thread-inline-chat")) return;
+
+			if (mobileMessagesQuery.matches) {
+				const isOpen = li.classList.contains("is-expanded");
+				// Close any other open thread
+				threadList.querySelectorAll(".thread-item.is-expanded").forEach((other) => {
+					if (other !== li) other.classList.remove("is-expanded");
+				});
+				if (!isOpen) {
+					li.classList.add("is-expanded");
+					renderInlineLog();
+					if (chatInput && !isUnavailable(listing)) {
+						chatInput.setAttribute("readonly", "");
+						chatInput.addEventListener("touchstart", () => {
+							chatInput.removeAttribute("readonly");
+						}, { once: false, passive: true });
+					}
+				} else {
+					li.classList.remove("is-expanded");
+				}
+			} else {
+				openChat(thread.listingId);
+			}
+		});
+
 		threadList.appendChild(li);
 	});
 }
