@@ -80,6 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
     fields.photo.disabled = !isEditing;
     fields.username.disabled = true;
 
+    const photoLabel = fields.photo?.closest("label");
+    if (photoLabel) {
+      photoLabel.hidden = !isEditing;
+    }
+
+    if (form) {
+      form.classList.toggle("is-readonly", !isEditing);
+    }
+
     editButton.hidden = isEditing;
     saveButton.hidden = !isEditing;
     cancelButton.hidden = !isEditing;
@@ -109,7 +118,10 @@ document.addEventListener("DOMContentLoaded", () => {
     currentPhoto = profile.photoDataUrl || "";
     avatar.src = currentPhoto || "https://via.placeholder.com/120x120.png?text=Profile";
     summaryName.textContent = user.name || "My profile";
-    summaryMeta.textContent = [user.role, profile.nationality, profilePageStatusLabel(profile.status)].filter(Boolean).join(" • ");
+    const genderLabel = profile.gender
+      ? profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1).replace(/-/g, " ")
+      : "";
+    summaryMeta.textContent = [genderLabel, profile.nationality, profilePageStatusLabel(profile.status)].filter(Boolean).join(" • ");
 
     errorEl.hidden = true;
     clearInvalidMarks();

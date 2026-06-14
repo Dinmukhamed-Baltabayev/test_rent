@@ -7,6 +7,7 @@ const AUTH_KEY = "nestlyAuth";
 const MESSAGE_STORAGE_PREFIX = "nestlyMessagesV1";
 const REGISTERED_USERS_KEY = "nestlyRegisteredUsersV1";
 const PROFILE_OVERRIDES_KEY = "nestlyProfileOverridesV1";
+const LANDLORD_POSTS_KEY = "nestlyLandlordPosts";
 
 const TEST_USERS = [
   { username: "demo", password: "demo123", name: "Demo Renter", role: "renter" },
@@ -16,6 +17,285 @@ const TEST_USERS = [
 let authModalMode = "login";
 let signupAudience = "renter";
 let profileEditing = false;
+
+const DEMO_LANDLORD_LISTINGS = [
+  {
+    id: 91001,
+    ownerUsername: "landlord",
+    title: "Debrecen, Jokai utca - 2 bedroom flat with garden",
+    ownership: "owner",
+    purpose: "rent",
+    rentType: "long",
+    contractLabel: "12-month contract",
+    postedDate: "2026-06-10",
+    status: "available",
+    availableFrom: "2026-10-01",
+    city: "Debrecen",
+    district: "Jokai utca",
+    type: "apartment",
+    price: 0,
+    priceFt: 450000,
+    communityFeeFt: 28000,
+    depositFt: 900000,
+    utilitiesEstimateFt: 35000,
+    rooms: 3,
+    size: 76,
+    flatType: "New build",
+    floorNumber: 1,
+    elevator: false,
+    bedrooms: 2,
+    bathrooms: 2,
+    condition: "Excellent",
+    heatingType: "Individual gas",
+    furnishing: "Furnished",
+    features: ["Air conditioning", "Balcony", "Parking"],
+    furnished: true,
+    lat: 47.5315,
+    lng: 21.6224,
+    images: [
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80"
+    ],
+    description: "Modern two-bedroom rental with garden access near tram line and city center. Fully equipped kitchen and AC in every room.",
+    createdAt: 1760000000001,
+    mode: "post"
+  },
+  {
+    id: 91002,
+    ownerUsername: "landlord",
+    title: "Debrecen, Bem ter - 3 beds flat next to tramline",
+    ownership: "organization",
+    purpose: "rent",
+    rentType: "long",
+    contractLabel: "12-month contract",
+    postedDate: "2026-06-08",
+    status: "available",
+    availableFrom: "2026-09-01",
+    city: "Debrecen",
+    district: "Bem ter",
+    type: "apartment",
+    price: 0,
+    priceFt: 480000,
+    communityFeeFt: 36000,
+    depositFt: 960000,
+    utilitiesEstimateFt: 60000,
+    rooms: 3,
+    size: 104,
+    flatType: "Brick",
+    floorNumber: 3,
+    elevator: true,
+    bedrooms: 3,
+    bathrooms: 2,
+    condition: "Recently renovated",
+    heatingType: "Individual gas",
+    furnishing: "Furnished",
+    features: ["Air conditioning", "Balcony", "Dishwasher"],
+    furnished: true,
+    lat: 47.5347,
+    lng: 21.6261,
+    images: [
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1464890100898-a385f744067f?auto=format&fit=crop&w=900&q=80"
+    ],
+    description: "Spacious three-bedroom apartment near tram line with balcony and elevator. Ideal for students sharing.",
+    createdAt: 1760000000002,
+    mode: "post"
+  },
+  {
+    id: 91003,
+    ownerUsername: "landlord",
+    title: "Debrecen, Doczy Jozsef utca - Two bedrooms near Uni",
+    ownership: "owner",
+    purpose: "rent",
+    rentType: "long",
+    contractLabel: "6-month contract",
+    postedDate: "2026-06-07",
+    status: "available",
+    availableFrom: "2026-08-15",
+    city: "Debrecen",
+    district: "Doczy Jozsef utca",
+    type: "apartment",
+    price: 0,
+    priceFt: 280000,
+    communityFeeFt: 22000,
+    depositFt: 560000,
+    utilitiesEstimateFt: 35000,
+    rooms: 3,
+    size: 60,
+    flatType: "Brick",
+    floorNumber: 2,
+    elevator: false,
+    bedrooms: 2,
+    bathrooms: 1,
+    condition: "Good condition",
+    heatingType: "Individual gas",
+    furnishing: "Furnished",
+    features: ["Washing machine", "Dishwasher", "Balcony"],
+    furnished: true,
+    lat: 47.5535,
+    lng: 21.6214,
+    images: [
+      "https://images.unsplash.com/photo-1501876725168-00c445821c9e?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?auto=format&fit=crop&w=900&q=80"
+    ],
+    description: "Two-bedroom flat close to university campuses with practical layout and bright living room.",
+    createdAt: 1760000000003,
+    mode: "post"
+  },
+  {
+    id: 91004,
+    ownerUsername: "landlord",
+    title: "Debrecen, Fenyes udvar - Room near Engineering Faculty",
+    ownership: "owner",
+    purpose: "rent",
+    rentType: "short",
+    contractLabel: "3-month minimum",
+    postedDate: "2026-06-06",
+    status: "available",
+    availableFrom: "2026-08-01",
+    city: "Debrecen",
+    district: "Fenyes udvar",
+    type: "shared",
+    price: 0,
+    priceFt: 100000,
+    communityFeeFt: 8000,
+    depositFt: 200000,
+    utilitiesEstimateFt: 12000,
+    rooms: 1,
+    size: 10,
+    flatType: "Panel",
+    floorNumber: 4,
+    elevator: true,
+    bedrooms: 1,
+    bathrooms: 1,
+    condition: "Good condition",
+    heatingType: "Central heating",
+    furnishing: "Furnished",
+    features: ["Washing machine", "Air conditioning"],
+    furnished: true,
+    lat: 47.5447,
+    lng: 21.6405,
+    images: [
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80"
+    ],
+    description: "Budget-friendly room in a shared flat close to Engineering Faculty and public transport.",
+    createdAt: 1760000000004,
+    mode: "post"
+  },
+  {
+    id: 91005,
+    ownerUsername: "landlord",
+    title: "Debrecen, Vezer utca - Duplex rowhouse close to IT Services",
+    ownership: "organization",
+    purpose: "rent",
+    rentType: "long",
+    contractLabel: "12-month contract",
+    postedDate: "2026-06-05",
+    status: "available",
+    availableFrom: "2026-09-15",
+    city: "Debrecen",
+    district: "Vezer utca",
+    type: "apartment",
+    price: 0,
+    priceFt: 490000,
+    communityFeeFt: 30000,
+    depositFt: 980000,
+    utilitiesEstimateFt: 50000,
+    rooms: 4,
+    size: 118,
+    flatType: "New build",
+    floorNumber: 0,
+    elevator: false,
+    bedrooms: 3,
+    bathrooms: 2,
+    condition: "Excellent",
+    heatingType: "Individual gas",
+    furnishing: "Partly furnished",
+    features: ["Parking", "Balcony", "Storage room"],
+    furnished: false,
+    lat: 47.5653,
+    lng: 21.6049,
+    images: [
+      "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=900&q=80"
+    ],
+    description: "Large duplex-style home for families or groups, with terrace and parking near the IT corridor.",
+    createdAt: 1760000000005,
+    mode: "post"
+  },
+  {
+    id: 91006,
+    ownerUsername: "landlord",
+    title: "Debrecen, Egyetem sugarut - Flat for sale",
+    ownership: "owner",
+    purpose: "sale",
+    rentType: null,
+    contractLabel: "",
+    postedDate: "2026-06-04",
+    status: "available",
+    availableFrom: "",
+    city: "Debrecen",
+    district: "Egyetem sugarut",
+    type: "apartment",
+    price: 0,
+    priceFt: 54990000,
+    communityFeeFt: 19000,
+    depositFt: 0,
+    utilitiesEstimateFt: 28000,
+    rooms: 2,
+    size: 58,
+    flatType: "Brick",
+    floorNumber: 2,
+    elevator: true,
+    bedrooms: 1,
+    bathrooms: 1,
+    condition: "Recently renovated",
+    heatingType: "District heating",
+    furnishing: "Partly furnished",
+    features: ["Balcony", "Storage room"],
+    furnished: false,
+    lat: 47.5531,
+    lng: 21.6268,
+    images: [
+      "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1464890100898-a385f744067f?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?auto=format&fit=crop&w=900&q=80"
+    ],
+    description: "Well-located apartment for sale near university area with strong rental potential.",
+    createdAt: 1760000000006,
+    mode: "post"
+  }
+];
+
+function ensureDemoLandlordListings() {
+  try {
+    const raw = localStorage.getItem(LANDLORD_POSTS_KEY);
+    const existing = raw ? JSON.parse(raw) : [];
+    const store = Array.isArray(existing) ? existing : [];
+    const ids = new Set(store.map((item) => Number(item?.id)).filter((id) => Number.isFinite(id)));
+    let changed = false;
+
+    DEMO_LANDLORD_LISTINGS.forEach((seed) => {
+      if (!ids.has(seed.id)) {
+        store.push(seed);
+        ids.add(seed.id);
+        changed = true;
+      }
+    });
+
+    if (changed) {
+      localStorage.setItem(LANDLORD_POSTS_KEY, JSON.stringify(store));
+    }
+  } catch {
+    // Ignore storage failures in restricted environments.
+  }
+}
 
 function readRegisteredUsers() {
   try {
@@ -986,6 +1266,7 @@ function updateAuthUI() {
 // ── Boot ─────────────────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", () => {
+  ensureDemoLandlordListings();
   injectLoginModal();
   injectProfileModal();
   updateAuthUI();

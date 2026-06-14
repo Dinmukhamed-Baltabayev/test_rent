@@ -18,7 +18,7 @@ const listingLibraryEmptyEl = document.getElementById("listingLibraryEmpty");
 const viewDraftsBtn = document.getElementById("viewDraftsBtn");
 const viewPostedBtn = document.getElementById("viewPostedBtn");
 const viewNewBtn = document.getElementById("viewNewBtn");
-const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=900&q=80";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80";
 const DEFAULT_PICKER_COORDS = { lat: 47.4979, lng: 19.0402 };
 const DRAFTS_KEY = "nestlyLandlordDrafts";
 const POSTS_KEY = "nestlyLandlordPosts";

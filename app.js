@@ -32,7 +32,7 @@ const seedListings = [
     lat: 47.5546,
     lng: 21.621,
     images: [
-      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=900&q=80"
     ],
@@ -178,7 +178,7 @@ function getLandlordPostedListings() {
         city: item.city || "N/A",
         district: item.district || "N/A",
         images: Array.isArray(item.images) && item.images.length ? item.images : [
-          "https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=900&q=80"
+          "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80"
         ],
         postedDate: item.postedDate || new Date().toISOString().slice(0, 10),
         features: Array.isArray(item.features) ? item.features : [],

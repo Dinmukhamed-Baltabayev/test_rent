@@ -11,7 +11,7 @@ const listings = [
 		status: "available",
 		availableFrom: "2026-07-01",
 		price: 168000,
-		images: ["https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=900&q=80"]
+		images: ["https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80"]
 	},
 	{
 		id: 2,
