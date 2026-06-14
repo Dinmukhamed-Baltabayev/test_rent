@@ -577,12 +577,6 @@ function renderCards(items) {
     return;
   }
 
-  items = [...items].sort((a, b) => {
-    const aUnavailable = isUnavailable(a) ? 1 : 0;
-    const bUnavailable = isUnavailable(b) ? 1 : 0;
-    return aUnavailable - bUnavailable;
-  });
-
   const fragment = document.createDocumentFragment();
   const leftColumn = document.createElement("div");
   leftColumn.className = "cards-column cards-column-left";
