@@ -922,12 +922,17 @@ function updateAuthUI() {
   const actionsEl = document.querySelector(".topbar-actions");
   if (!actionsEl) return;
 
-  // Remove existing auth controls so we can rebuild
+  // Remove existing auth controls so we can rebuild (home-btn is preserved)
   actionsEl.querySelectorAll(".login-btn, .logout-btn, .profile-btn, .topbar-user, .post-listing-button, .post-listing-menu").forEach(
     (el) => el.remove()
   );
 
-  const messagesLink = actionsEl.querySelector(".message-center-button, a[href='index.html']");
+  const homeBtn = actionsEl.querySelector(".home-btn");
+  const messagesLink = actionsEl.querySelector(".message-center-button");
+
+  // Detach persistent controls so we can re-append in a deterministic order.
+  if (homeBtn) homeBtn.remove();
+  if (messagesLink) messagesLink.remove();
 
   if (isLoggedIn()) {
     const profileBtn = document.createElement("a");
@@ -950,7 +955,8 @@ function updateAuthUI() {
     myListingLink.setAttribute("aria-label", "Open current listings");
     myListingLink.textContent = "My listing";
 
-    // Left side order: My profile, My listing, Messages.
+    // Left side order: Home, My profile, My listing, Messages.
+    if (homeBtn) actionsEl.appendChild(homeBtn);
     actionsEl.appendChild(profileBtn);
 
     if (isLandlord()) {
@@ -968,6 +974,9 @@ function updateAuthUI() {
     loginBtn.className = "btn ghost login-btn";
     loginBtn.textContent = "Log in";
     loginBtn.addEventListener("click", openLoginModal);
+
+    if (homeBtn) actionsEl.appendChild(homeBtn);
+    if (messagesLink) actionsEl.appendChild(messagesLink);
 
     // Keep auth action as the rightmost control in the topbar.
     actionsEl.appendChild(loginBtn);

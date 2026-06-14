@@ -69,14 +69,6 @@ const inlineChatInput = document.getElementById("inlineChatInput");
 const clearChatsBtn = document.getElementById("clearChats");
 const mobileMessagesQuery = window.matchMedia("(max-width: 720px)");
 
-document.addEventListener("DOMContentLoaded", () => {
-	if (inlineChatInput) {
-		inlineChatInput.addEventListener("touchstart", () => {
-			inlineChatInput.removeAttribute("readonly");
-		}, { once: false, passive: true });
-	}
-});
-
 let activeListingId = null;
 
 function loadMessageStore() {
@@ -250,11 +242,7 @@ function openChat(listingId) {
 
 	chatPlaceholder.hidden = true;
 	inlineChat.hidden = false;
-	if (mobileMessagesQuery.matches) {
-		inlineChatInput.setAttribute("readonly", "");
-		inlineChatInput.blur();
-	} else if (!isUnavailable(listing)) {
-		inlineChatInput.removeAttribute("readonly");
+	if (!isUnavailable(listing) && !mobileMessagesQuery.matches) {
 		inlineChatInput.focus();
 	}
 
@@ -350,7 +338,6 @@ function renderThreads() {
 			</div>
 		`;
 
-		const inlineChatEl = li.querySelector(".thread-inline-chat");
 		const chatLogEl = li.querySelector(".thread-chat-log");
 		const chatForm = li.querySelector(".thread-chat-form");
 		const chatInput = li.querySelector(".thread-chat-input");
@@ -396,7 +383,6 @@ function renderThreads() {
 
 			if (mobileMessagesQuery.matches) {
 				const isOpen = li.classList.contains("is-expanded");
-				// Close any other open thread
 				threadList.querySelectorAll(".thread-item.is-expanded").forEach((other) => {
 					if (other !== li) other.classList.remove("is-expanded");
 				});
@@ -416,7 +402,6 @@ function renderThreads() {
 				openChat(thread.listingId);
 			}
 		});
-
 		threadList.appendChild(li);
 	});
 }

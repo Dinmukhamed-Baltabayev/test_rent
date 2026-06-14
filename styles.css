@@ -15,6 +15,30 @@
   box-sizing: border-box;
 }
 
+/* Home button — always first in topbar-actions */
+.home-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  border-radius: 12px;
+  min-height: 46px;
+  width: 46px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.home-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 [hidden] {
   display: none !important;
 }
@@ -359,14 +383,6 @@ body {
 .auth-input:focus {
   outline: 2px solid #bde8d4;
   border-color: #9cd8bd;
-}
-
-.auth-input:disabled,
-.auth-input[disabled] {
-  color: #7a8a82;
-  background: #f9fbf9;
-  border-color: #e4ebe5;
-  -webkit-text-fill-color: #7a8a82;
 }
 
 .auth-input.is-invalid {
@@ -1399,8 +1415,8 @@ h2 {
   list-style: none;
   display: grid;
   gap: 6px;
-  max-height: 190px;
-  overflow-y: auto;
+  max-height: 130px;
+  overflow: auto;
 }
 
 .chat-log li {
@@ -1757,6 +1773,12 @@ h2 {
     border-radius: 11px;
     white-space: nowrap;
     flex: 0 0 auto;
+  }
+
+  .home-btn {
+    min-height: 34px;
+    width: 34px;
+    border-radius: 11px;
   }
 
   .message-center-button {

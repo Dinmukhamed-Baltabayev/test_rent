@@ -80,10 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
     fields.photo.disabled = !isEditing;
     fields.username.disabled = true;
 
-    // Show photo row only in edit mode
-    const photoLabel = fields.photo.closest("label");
-    if (photoLabel) photoLabel.hidden = !isEditing;
-
     editButton.hidden = isEditing;
     saveButton.hidden = !isEditing;
     cancelButton.hidden = !isEditing;
@@ -113,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentPhoto = profile.photoDataUrl || "";
     avatar.src = currentPhoto || "https://via.placeholder.com/120x120.png?text=Profile";
     summaryName.textContent = user.name || "My profile";
-    summaryMeta.textContent = [profile.gender ? profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1).replace(/-/g, " ") : "", profile.nationality, profilePageStatusLabel(profile.status)].filter(Boolean).join(" • ");
+    summaryMeta.textContent = [user.role, profile.nationality, profilePageStatusLabel(profile.status)].filter(Boolean).join(" • ");
 
     errorEl.hidden = true;
     clearInvalidMarks();
