@@ -458,9 +458,14 @@ function closeLightbox() {
 function initGalleryLightbox(images, scopeEl) {
   lightboxImages = images;
   const thumbs = scopeEl.querySelectorAll(".photo-thumb");
+  const isTouchDevice = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 
   thumbs.forEach((thumb) => {
     thumb.addEventListener("click", () => {
+      if (isTouchDevice) {
+        return;
+      }
+
       // iOS can emit a follow-up tap after expanding the card; ignore it briefly.
       if (Date.now() < suppressLightboxUntil) {
         return;

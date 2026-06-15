@@ -1919,6 +1919,13 @@ h2 {
     width: 100%;
   }
 
+  .listing-image {
+    height: 170px;
+    min-height: 170px;
+    max-height: 170px;
+    align-self: start;
+  }
+
   .listing-row {
     flex-wrap: wrap;
     align-items: flex-start;
@@ -1972,6 +1979,30 @@ h2 {
 
   .view-details {
     display: none;
+  }
+
+  .card-details-inner {
+    padding: 10px 12px 12px;
+  }
+
+  .photo-row {
+    display: none;
+  }
+
+  .details-list {
+    margin: 0 0 8px;
+  }
+
+  .details-text {
+    margin: 0 0 8px;
+  }
+
+  .map-wrap iframe {
+    height: 120px;
+  }
+
+  .card-details.open {
+    max-height: 1500px;
   }
 
   .messages-layout {
