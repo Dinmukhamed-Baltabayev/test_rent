@@ -1309,9 +1309,12 @@ h2 {
 }
 
 .view-details {
-  align-self: flex-end;
-  padding: 9px 12px;
-  font-size: 0.84rem;
+  align-self: stretch;
+  width: 100%;
+  margin-top: auto;
+  padding: 6px 10px;
+  min-height: 32px;
+  font-size: 0.76rem;
 }
 
 .details-actions {
