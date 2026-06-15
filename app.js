@@ -208,6 +208,7 @@ let lightboxIndex = 0;
 let selectedListingId = null;
 let filteredListings = [...listings];
 let messageStore = {};
+let suppressLightboxUntil = 0;
 
 function getActiveMessageStorageKey() {
   if (typeof getUserMessageStorageKey === "function") {
@@ -460,6 +461,11 @@ function initGalleryLightbox(images, scopeEl) {
 
   thumbs.forEach((thumb) => {
     thumb.addEventListener("click", () => {
+      // iOS can emit a follow-up tap after expanding the card; ignore it briefly.
+      if (Date.now() < suppressLightboxUntil) {
+        return;
+      }
+
       const index = Number(thumb.dataset.index || 0);
       showLightboxImage(index);
     });
@@ -629,7 +635,7 @@ function renderCards(items) {
 
     detailsButton.addEventListener("click", (event) => {
       event.stopPropagation();
-      openCardDetails(listing, card, detailsHost, detailsButton, false);
+      openCardDetails(listing, card, detailsHost, detailsButton, false, true);
     });
 
     card.addEventListener("click", (event) => {
@@ -642,7 +648,7 @@ function renderCards(items) {
         return;
       }
 
-      openCardDetails(listing, card, detailsHost, detailsButton, false);
+      openCardDetails(listing, card, detailsHost, detailsButton, false, false);
     });
 
     card.style.animationDelay = `${index * 60}ms`;
@@ -747,7 +753,7 @@ function closeOpenCardDetails() {
   });
 }
 
-function openCardDetails(listing, cardEl, detailsHost, detailsButton, focusChat) {
+function openCardDetails(listing, cardEl, detailsHost, detailsButton, focusChat, fromCardTap) {
   const alreadyOpen = detailsHost.classList.contains("open");
   closeOpenCardDetails();
 
@@ -756,6 +762,10 @@ function openCardDetails(listing, cardEl, detailsHost, detailsButton, focusChat)
   }
 
   selectedListingId = listing.id;
+  if (fromCardTap && window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    suppressLightboxUntil = Date.now() + 450;
+  }
+
   detailsHost.innerHTML = detailsMarkup(listing);
   detailsHost.classList.add("open");
   cardEl.classList.add("is-expanded");
@@ -852,7 +862,7 @@ if (deepLinkedListing) {
     if (card) {
       const detailsHost = card.querySelector(".card-details");
       const detailsButton = card.querySelector(".view-details");
-      openCardDetails(deepLinkedListing, card, detailsHost, detailsButton, true);
+      openCardDetails(deepLinkedListing, card, detailsHost, detailsButton, true, false);
     }
   }, 150);
 }
