@@ -542,6 +542,18 @@ function getChatDisabledReason(listing) {
   return "";
 }
 
+function getChatInputPlaceholder(listing) {
+  if (!isLoggedIn()) {
+    return "Log in to send messages";
+  }
+
+  if (canSendMessage(listing)) {
+    return "Write a message...";
+  }
+
+  return getChatDisabledReason(listing) || "Write a message...";
+}
+
 function isUnavailable(listing) {
   return listing.status === "rented" || listing.status === "sold";
 }
@@ -722,16 +734,14 @@ function detailsMarkup(listing) {
         <iframe title="Location map" src="${mapSrc(listing.lat, listing.lng)}" loading="lazy"></iframe>
       </div>
 
-      <p class="small">Map point is approximate for draft version.</p>
-
       <h4>Chat with landlord</h4>
       <div class="chat-box">
         <ul class="chat-log"></ul>
         <form class="inline-form chat-form">
-          <input class="chat-input" type="text" placeholder="Write a message..." ${canSendMessage(listing) ? "required" : "disabled"}>
+          <input class="chat-input" type="text" placeholder="${getChatInputPlaceholder(listing)}" ${canSendMessage(listing) ? "required" : "disabled"}>
           <button class="btn primary" type="submit" ${canSendMessage(listing) ? "" : "disabled"}>Send</button>
         </form>
-        ${canSendMessage(listing) ? "" : `<p class="small">${getChatDisabledReason(listing)}</p>`}
+        ${!canSendMessage(listing) && isLoggedIn() ? `<p class="small">${getChatDisabledReason(listing)}</p>` : ""}
       </div>
     </div>
   `;

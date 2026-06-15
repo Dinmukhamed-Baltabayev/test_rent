@@ -1294,7 +1294,12 @@ h2 {
 
 .card-details-inner {
   border-top: 1px solid var(--line);
-  padding: 12px 24px 16px;
+  padding: 12px 20px 14px;
+}
+
+.card-details-inner h4 {
+  margin: 10px 0 8px;
+  font-size: 1rem;
 }
 
 .photo-row {
@@ -1395,7 +1400,7 @@ h2 {
 .chat-box {
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 10px;
+  padding: 8px;
   background: #fff;
   transition: box-shadow 0.4s ease, border-color 0.4s ease;
 }
@@ -1406,7 +1411,7 @@ h2 {
 }
 
 .chat-log {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   padding: 0;
   list-style: none;
   display: grid;
@@ -1454,6 +1459,7 @@ h2 {
 
 .small {
   font-size: 0.78rem;
+  margin: 4px 2px 0;
 }
 
 .messages-layout {
