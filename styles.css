@@ -1913,6 +1913,22 @@ h2 {
     width: 100%;
   }
 
+  .listing-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .listing-price {
+    order: 1;
+    margin-left: auto;
+  }
+
+  .listing-title {
+    order: 2;
+    flex: 1 0 100%;
+    margin-top: 2px;
+  }
+
   .thread-item-head {
     gap: 6px;
     margin-bottom: 3px;
@@ -1949,7 +1965,7 @@ h2 {
   }
 
   .view-details {
-    align-self: flex-end;
+    display: none;
   }
 
   .messages-layout {
