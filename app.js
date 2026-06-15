@@ -606,6 +606,62 @@ function formatPostedDate(dateStr) {
   return `Posted ${date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`;
 }
 
+let titleMeasureEl = null;
+let titleResizeRaf = 0;
+
+function ensureTitleMeasureEl() {
+  if (titleMeasureEl) {
+    return titleMeasureEl;
+  }
+
+  titleMeasureEl = document.createElement("div");
+  titleMeasureEl.style.position = "fixed";
+  titleMeasureEl.style.left = "-9999px";
+  titleMeasureEl.style.top = "-9999px";
+  titleMeasureEl.style.visibility = "hidden";
+  titleMeasureEl.style.pointerEvents = "none";
+  titleMeasureEl.style.whiteSpace = "normal";
+  titleMeasureEl.style.wordBreak = "break-word";
+  titleMeasureEl.style.padding = "0";
+  titleMeasureEl.style.margin = "0";
+  document.body.appendChild(titleMeasureEl);
+  return titleMeasureEl;
+}
+
+function applyTitleCompaction(scopeEl = cardsEl) {
+  if (!scopeEl) {
+    return;
+  }
+
+  const measureEl = ensureTitleMeasureEl();
+  const titles = scopeEl.querySelectorAll(".listing-title");
+  titles.forEach((titleEl) => {
+    titleEl.classList.remove("is-compact");
+
+    const width = titleEl.clientWidth;
+    if (!width) {
+      return;
+    }
+
+    const style = window.getComputedStyle(titleEl);
+    const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.25;
+
+    measureEl.style.width = `${width}px`;
+    measureEl.style.fontFamily = style.fontFamily;
+    measureEl.style.fontSize = style.fontSize;
+    measureEl.style.fontWeight = style.fontWeight;
+    measureEl.style.letterSpacing = style.letterSpacing;
+    measureEl.style.lineHeight = style.lineHeight;
+    measureEl.textContent = titleEl.textContent || "";
+
+    const measuredHeight = measureEl.getBoundingClientRect().height;
+    const measuredLines = Math.ceil((measuredHeight + 0.5) / lineHeight);
+    if (measuredLines > 2) {
+      titleEl.classList.add("is-compact");
+    }
+  });
+}
+
 function renderCards(items) {
   cardsEl.innerHTML = "";
 
@@ -628,7 +684,7 @@ function renderCards(items) {
     node.querySelector(".listing-title").textContent = listing.title;
     node.querySelector(".listing-price").textContent = formatPrice(listing);
     node.querySelector(".listing-subtitle").textContent = `${listing.city} · ${listing.district}`;
-    node.querySelector(".listing-posted-date").textContent = formatPostedDate(listing.postedDate);
+    node.querySelector(".listing-posted-date").hidden = true;
 
     const rentTypeEl = node.querySelector(".listing-rent-type");
     const rentTypeText = formatRentType(listing);
@@ -680,6 +736,8 @@ function renderCards(items) {
   fragment.appendChild(rightColumn);
   cardsEl.appendChild(fragment);
   resultCountEl.textContent = `${items.length} result${items.length > 1 ? "s" : ""}`;
+
+  requestAnimationFrame(() => applyTitleCompaction(cardsEl));
 }
 
 function mapSrc(lat, lng) {
@@ -688,6 +746,11 @@ function mapSrc(lat, lng) {
 }
 
 function detailsMarkup(listing) {
+  const postedDateLabel = formatPostedDate(listing.postedDate).replace(/^Posted\s+/, "");
+  const postedByLine = postedDateLabel
+    ? `Posted by: ${formatOwnership(listing)} on ${postedDateLabel}`
+    : `Posted by: ${formatOwnership(listing)}`;
+
   return `
     <div class="card-details-inner">
       <div class="photo-row">
@@ -703,7 +766,7 @@ function detailsMarkup(listing) {
           .join("")}
       </div>
 
-      <p class="details-ownership">Posted by: ${formatOwnership(listing)}</p>
+      <p class="details-ownership">${postedByLine}</p>
 
       <h5 class="section-kicker">Financial Information</h5>
       <ul class="details-list">
@@ -856,6 +919,17 @@ if (resetFiltersBtn) {
 loadCurrentMessageStore();
 updateMessageBadge();
 renderCards(filteredListings);
+
+window.addEventListener("resize", () => {
+  if (titleResizeRaf) {
+    cancelAnimationFrame(titleResizeRaf);
+  }
+
+  titleResizeRaf = requestAnimationFrame(() => {
+    applyTitleCompaction(cardsEl);
+    titleResizeRaf = 0;
+  });
+});
 
 // Re-render cards when auth state changes so chat gates update
 function onLoginSuccess() {
