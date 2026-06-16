@@ -139,7 +139,7 @@ body {
   border: 1px solid var(--line);
   background: #fff;
   color: var(--text);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   min-height: 46px;
   padding: 10px 16px;
   font-weight: 700;
@@ -600,7 +600,7 @@ body.modal-open {
 
 .message-center-button {
   color: #234235;
-  border-radius: 999px;
+  border-radius: var(--radius-md);
 }
 
 .message-count {
@@ -625,10 +625,10 @@ body.modal-open {
 .hero {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow);
-  padding: 30px;
-  animation: rise 0.6s ease;
+  padding: 18px;
+  animation: rise 0.5s ease;
 }
 
 .kicker {
@@ -941,11 +941,15 @@ textarea {
 }
 
 .landlord-listing-card.landlord-listing-compact .listing-image {
+  grid-column: 1;
+  grid-row: 1;
   height: 72px;
   min-height: 72px;
 }
 
 .landlord-listing-card.landlord-listing-compact .listing-content {
+  grid-column: 2;
+  grid-row: 1;
   padding: 10px 12px;
 }
 
@@ -1060,7 +1064,7 @@ textarea {
 
 .btn {
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 12px 14px;
   font-weight: 700;
   cursor: pointer;
@@ -1847,7 +1851,7 @@ h2 {
     min-height: 34px;
     padding: 6px 10px;
     font-size: 0.78rem;
-    border-radius: 11px;
+    border-radius: var(--radius-md);
     white-space: nowrap;
     flex: 0 0 auto;
   }
@@ -1855,12 +1859,12 @@ h2 {
   .home-btn {
     min-height: 34px;
     width: 34px;
-    border-radius: 11px;
+    border-radius: var(--radius-md);
   }
 
   .message-center-button {
     gap: 6px;
-    border-radius: 999px;
+    border-radius: var(--radius-md);
   }
 
   input,
@@ -2033,7 +2037,14 @@ h2 {
   }
 
   .photo-row {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .photo-row img {
+    height: 72px;
   }
 
   .details-list {

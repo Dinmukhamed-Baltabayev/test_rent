@@ -753,6 +753,8 @@ function detailsMarkup(listing) {
 
   return `
     <div class="card-details-inner">
+      <p class="details-ownership">${postedByLine}</p>
+
       <div class="photo-row">
         ${listing.images
           .slice(0, 3)
@@ -765,8 +767,6 @@ function detailsMarkup(listing) {
           )
           .join("")}
       </div>
-
-      <p class="details-ownership">${postedByLine}</p>
 
       <h5 class="section-kicker">Financial Information</h5>
       <ul class="details-list">
