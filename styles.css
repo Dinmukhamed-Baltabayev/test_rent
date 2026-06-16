@@ -1220,8 +1220,8 @@ h2 {
 }
 
 .listing-title.is-compact {
-  font-size: 0.94rem;
-  line-height: 1.2;
+  font-size: 1.05rem;
+  line-height: 1.25;
 }
 
 .listing-price {
@@ -1247,7 +1247,6 @@ h2 {
   justify-content: flex-start;
   align-items: center;
   gap: 12px;
-  margin-top: auto;
 }
 
 .listing-subtitle {
@@ -1957,14 +1956,14 @@ h2 {
   .listing-card {
     width: 100%;
     max-width: 100%;
-    grid-template-columns: minmax(0, 1fr) 132px;
+    grid-template-columns: minmax(0, 1fr) 136px;
   }
 
   .listing-image {
     height: 170px;
     min-height: 170px;
     max-height: 170px;
-    width: 132px;
+    width: 136px;
     align-self: start;
   }
 
