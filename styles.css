@@ -1162,7 +1162,8 @@ h2 {
   box-shadow: var(--shadow);
   transition: border-color 0.24s ease, box-shadow 0.24s ease;
   animation: rise 0.5s ease;
-  align-self: start;
+  align-self: stretch;
+  width: 100%;
   cursor: pointer;
   position: relative;
 }
@@ -1246,6 +1247,7 @@ h2 {
   justify-content: flex-start;
   align-items: center;
   gap: 12px;
+  margin-top: auto;
 }
 
 .listing-subtitle {
@@ -1955,14 +1957,14 @@ h2 {
   .listing-card {
     width: 100%;
     max-width: 100%;
-    grid-template-columns: minmax(0, 1fr) 120px;
+    grid-template-columns: minmax(0, 1fr) 132px;
   }
 
   .listing-image {
     height: 170px;
     min-height: 170px;
     max-height: 170px;
-    width: 120px;
+    width: 132px;
     align-self: start;
   }
 
